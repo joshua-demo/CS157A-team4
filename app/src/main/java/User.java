@@ -1,3 +1,6 @@
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 public class User {
 	
 	private String user_id;
@@ -11,7 +14,7 @@ public class User {
     	this.name = name;
         this.email = email;
         this.password = password;
-        this.profile_date_created = profile_date_created;
+        generateCreationDate();
     }
 
     // Getters and Setters
@@ -29,7 +32,10 @@ public class User {
 
 	public String getProfile_date_created() { return profile_date_created; }
 	public void setProfile_date_created(String profile_date_created) { this.profile_date_created = profile_date_created; }
-
+	public void generateCreationDate() {
+		String currentDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+		this.profile_date_created = currentDate;
+	}
     
     
 }
