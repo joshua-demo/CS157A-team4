@@ -9,8 +9,8 @@ public class User {
     private String password;
     private String profile_date_created;
     
-    public User(String user_id, String name, String email, String password, String profile_date_created) {
-        this.user_id = user_id;
+    public User(String user_id, String name, String email, String password) {
+        this.user_id = user_id; //username rather than number ID?
     	this.name = name;
         this.email = email;
         this.password = password;
