@@ -31,10 +31,10 @@ public class User {
     public void setPassword(String password) { this.password = password; }
 
 	public String getProfile_date_created() { return profile_date_created; }
-	//MM/dd/yyyy format for setting date [ex: 10/13/2024]
+	//MM/dd/yyyy format for setting date [ex: 2024-10-13]
 	public void setProfile_date_created(String profile_date_created) { this.profile_date_created = profile_date_created; }
 	public void generateCreationDate() {
-		String currentDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+		String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		this.profile_date_created = currentDate;
 	}
     
