@@ -4,17 +4,23 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<link rel="stylesheet" href="registerStyles.css">
+<title>Study Smart</title>
 </head>
 <body>
+	<header>
+		<h1 id="study-smart-title">StudySmart</h1>
+		<br> <br> <br>
+	</header>
+	
 	<form action="URegister" method="post">
-		<table>
+		<table class="register-fields">
 			<tr>
-				<td>User Id</td>
+				<td>Username</td>
 				<td><input type="text" name="userID" /></td>
 			</tr>
 			<tr>
-				<td>Name</td>
+				<td>Full Name</td>
 				<td><input type="text" name="name" /></td>
 			</tr>
 			<tr>

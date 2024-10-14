@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat;
 
 public class User {
 	
-	private String user_id;
+	private String user_id; //username
     private String name;
     private String email;
     private String password;
