@@ -11,7 +11,7 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-lg shadow-md w-96">
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-blue-500">StudySmart</h1>
+            <h1 class="text-3xl font-bold text-blue-600">StudySmart</h1>
         </header>
         
         <form action="ULogin" method="post" class="space-y-4">
@@ -32,6 +32,15 @@
                 </button>
             </div>
         </form>
+        
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">
+                Don't have an account? 
+                <a href="userRegister.jsp" class="font-medium text-blue-600 hover:underline">
+                    Register here
+                </a>
+            </p>
+        </div>
     </div>
 </body>
 </html>
