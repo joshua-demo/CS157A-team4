@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  tomcat:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=brawlstars
+      - MYSQL_DATABASE=studysmart
+    volumes:
+      - ./src:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes
+      - ./src/main/webapp:/usr/local/tomcat/webapps/ROOT
+    restart: always
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=brawlstars
+      - MYSQL_DATABASE=studysmart
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
