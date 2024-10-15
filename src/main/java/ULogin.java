@@ -15,11 +15,14 @@ public class ULogin extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        String username = request.getParameter("userID");
+        String username = request.getParameter("username");
         String password = request.getParameter("password");
 
         UserRegisterDao urDao = new UserRegisterDao();
         boolean isValidUser = urDao.validateUser(username, password);
+        System.out.println("isValidUser: " + isValidUser);
+        System.out.println("username: " + username);
+        System.out.println("password: " + password);
 
         if (isValidUser) {
             response.getWriter().write("Login successful! Welcome, " + username);
