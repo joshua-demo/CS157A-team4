@@ -7,13 +7,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudySmart - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .alert-danger {
+            border: 2px solid red;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-lg shadow-md w-96">
         <header class="text-center mb-8">
             <h1 class="text-3xl font-bold text-blue-600">StudySmart</h1>
         </header>
-        
+        <% if (request.getParameter("error") != null) { %>
+            <div class="alert alert-danger" role="alert">
+                Invalid username or password!
+            </div>
+        <% } %>
         <form action="ULogin" method="post" class="space-y-4">
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-700">Username</label>

@@ -35,7 +35,7 @@ public class ULogin extends HttpServlet {
             dispatcher.forward(request, response);
             
         } else {
-            response.getWriter().write("Invalid login. Please try again.");
+            response.sendRedirect("loginPage.jsp?error=1");
             
             // This code is to bring you back to login page but we need to add a way to tell the user that login failed
             // rather than just reloading the page without any information about what happened

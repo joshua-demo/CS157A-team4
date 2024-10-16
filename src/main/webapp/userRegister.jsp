@@ -42,6 +42,14 @@
                 </button>
             </div>
         </form>
+        <div class="mt-6 text-center"></div>
+            <p class="text-sm text-gray-600">
+                Already have an account? 
+                <a href="loginPage.jsp" class="font-medium text-blue-600 hover:underline">
+                    Login here
+                </a>
+            </p>
+        </div>
     </div>
 </body>
 </html>
