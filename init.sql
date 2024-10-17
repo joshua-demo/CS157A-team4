@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS 'docker mysql';
-USE 'docker mysql';
+CREATE DATABASE IF NOT EXISTS `docker_mysql`;
+USE `docker_mysql`;
 
 -- You can add any initial table creation or data insertion here
 -- Create a sample 'users' table

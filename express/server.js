@@ -12,9 +12,9 @@ app.use(express.json());
 const dbConfig = {
   host: process.env.MYSQL_HOST || 'mysql',
   port: process.env.MYSQL_PORT || 3306,
-  user: process.env.MYSQL_USER,
+  user: 'root',
   password: process.env.MYSQL_ROOT_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
+  database: process.env.MYSQL_DATABASE || 'docker_mysql',
 };
 
 // Create MySQL connection pool
@@ -37,7 +37,7 @@ app.get('/api/db-test', async (req, res) => {
     pool.releaseConnection(conn);
     res.json({
       message: 'Database connection successful',
-      users: users.map(user => ({
+      users: results.map(user => ({
         id: user.id,
         username: user.username,
         email: user.email,
