@@ -1,5 +1,4 @@
 import java.io.IOException;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,10 +28,10 @@ public class ULogin extends HttpServlet {
         if (isValidUser) {
             response.getWriter().write("Login successful! Welcome, " + username);
             
-            // This code sends you to home page if login is a success            
-            RequestDispatcher dispatcher = request.getRequestDispatcher("homePage.jsp");
-            request.setAttribute("username", username); 
-            dispatcher.forward(request, response);
+            // // This code sends you to home page if login is a success            
+            // RequestDispatcher dispatcher = request.getRequestDispatcher("homePage.jsp");
+            // request.setAttribute("username", username); 
+            // dispatcher.forward(request, response);
             
         } else {
             response.getWriter().write("Invalid login. Please try again.");
