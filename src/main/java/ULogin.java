@@ -26,12 +26,12 @@ public class ULogin extends HttpServlet {
         System.out.println("password: " + password);
 
         if (isValidUser) {
-            response.getWriter().write("Login successful! Welcome, " + username);
+            // response.getWriter().write("Login successful! Welcome, " + username);
             
-            // // This code sends you to home page if login is a success            
-            // RequestDispatcher dispatcher = request.getRequestDispatcher("homePage.jsp");
-            // request.setAttribute("username", username); 
-            // dispatcher.forward(request, response);
+            // This code sends you to home page if login is a success            
+            RequestDispatcher dispatcher = request.getRequestDispatcher("homePage.jsp");
+            request.setAttribute("username", username); 
+            dispatcher.forward(request, response);
             
         } else {
             response.getWriter().write("Invalid login. Please try again.");
