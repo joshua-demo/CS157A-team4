@@ -1,0 +1,12 @@
+FROM mysql:8.0
+
+# Copy custom MySQL configuration
+COPY my.cnf /etc/mysql/conf.d/my.cnf
+
+# Set permissions for the configuration file
+RUN chmod 644 /etc/mysql/conf.d/my.cnf
+
+# Copy a script to create the database if it doesn't exist
+COPY init.sql /docker-entrypoint-initdb.d/
+
+CMD ["mysqld"]

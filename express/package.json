@@ -8,8 +8,10 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-app": "file:",
+    "mysql2": "^3.11.2",
     "nodemon": "^3.1.7"
   }
 }

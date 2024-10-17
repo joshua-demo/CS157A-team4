@@ -17,3 +17,31 @@ services:
       - "3000:3000"
     volumes:
       - ./express:/usr/src/app
+      - ./express/server.js:/usr/src/app/server.js
+      - ./express/package.json:/usr/src/app/package.json
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    env_file:
+      - .env
+    networks:
+      - app_network
+
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app_network
+
+volumes:
+  mysql-data:
+
+networks:
+  app_network:
+    driver: bridge
