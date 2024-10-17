@@ -1,0 +1,15 @@
+{
+  "name": "express-app",
+  "version": "1.0.0",
+  "description": "Express application",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon --legacy-watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-app": "file:",
+    "nodemon": "^3.1.7"
+  }
+}
