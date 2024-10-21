@@ -42,5 +42,11 @@
 			<button type="button">My Extracurriculars</button>
 		</a>
 	</section>
+
+	<section>
+		<a href="myTask.jsp">
+			<button type="button">My Tasks</button>
+		</a>
+	</section>
 </body>
 </html>
