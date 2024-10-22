@@ -1,13 +1,16 @@
 version: '3'
 services:
-  tomcat:
-    build:
-      context: .
-      dockerfile: Dockerfile.tomcat
+  web:
+    image: tomcat:9-jdk17-openjdk
+    restart: always
+    container_name: web
+    # build:
+      # context: ./src
+      # dockerfile: Dockerfile.tomcat
     ports:
       - "8080:8080"
     volumes:
-      - ./webapps:/usr/local/tomcat/webapps
+      - ./tomcat/webapps/midoripol.war:/usr/local/tomcat/webapps/ROOT.war
 
   mysql:
     build:
