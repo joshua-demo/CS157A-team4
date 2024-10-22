@@ -5,157 +5,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Courses</title>
+    <title>Courses Section</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
             color: #333;
-        }
-        #courseList {
-            list-style-type: none;
-            padding: 0;
-        }
-        #courseList li {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
             background-color: #f4f4f4;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
         }
+
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        #course-input {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        #course-form {
+            display: grid;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
         button {
-            background-color: #4CAF50;
+            background-color: #3498db;
             color: white;
             padding: 10px 15px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
         }
+
         button:hover {
-            background-color: #45a049;
+            background-color: #2980b9;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
+
+        #courses-list {
+            background-color: #fff;
             padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
         }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
             font-weight: bold;
         }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
+
+        tr:hover {
+            background-color: #f5f5f5;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-top: 10px;
-        }
-        input {
-            margin-bottom: 10px;
-            padding: 5px;
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            #course-form {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <section>
-        <h1>Current Courses</h1>
-        <ul id="courseList">
-            <!-- Courses will be added here dynamically -->
-        </ul>
-        <button id="addCourseBtn">Add Course</button>
+    <section id="course-input">
+        <h1>Add your Courses</h1>
+        <form id="course-form">
+            <label for="courseName">Course name:</label>
+            <input type="text" id="courseName" placeholder="e.g., CS157a" required>
+            
+            <label for="instructor">Instructor</label>
+            <input type="text" id="instructor" placeholder="e.g., Dr. Wu" required>
+
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" required>
+
+            <label for="endDate">End Date</label>
+            <input type="date" id="endDate" required>
+
+            <button type="button" onclick="addCourses()">Add Course</button>
+        </form>
     </section>
 
-    <div id="addCourseModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add New Course</h2>
-            <form id="addCourseForm">
-                <label for="courseName">Course Name:</label>
-                <input type="text" id="courseName" required>
+    <h2>My Courses</h2>
 
-                <label for="instructor">Instructor:</label>
-                <input type="text" id="instructor" required>
+    <section id="courses-list">
+        <table id="coursesTable">
+            <thead>
+                <tr>
+                    <th>Course Name</th>
+                    <th>Instructor</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table body will be populated by js -->
+            </tbody>
+        </table>
+    </section>
 
-                <label for="startDate">Start Date:</label>
-                <input type="date" id="startDate" required>
-
-                <label for="endDate">End Date:</label>
-                <input type="date" id="endDate" required>
-
-                <button type="submit">Add Course</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // Get the modal
-        var modal = document.getElementById("addCourseModal");
-
-        // Get the button that opens the modal
-        var btn = document.getElementById("addCourseBtn");
-
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-        // When the user clicks the button, open the modal 
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-
-        // Handle form submission
-        document.getElementById("addCourseForm").onsubmit = function(e) {
-            e.preventDefault();
-            var courseName = document.getElementById("courseName").value;
-            var instructor = document.getElementById("instructor").value;
-            var startDate = document.getElementById("startDate").value;
-            var endDate = document.getElementById("endDate").value;
-
-            // Create new list item
-            var li = document.createElement("li");
-            li.innerHTML = '<strong>${courseName}</strong> - Instructor: ${instructor}, Start Date: ${startDate}, End Date: ${endDate}';
-            document.getElementById("courseList").appendChild(li);
-
-            // Clear form and close modal
-            this.reset();
-            modal.style.display = "none";
-        }
-    </script>
+    <script src="courseScript.js"></script>
 </body>
 </html>
