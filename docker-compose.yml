@@ -9,23 +9,6 @@ services:
     volumes:
       - ./webapps:/usr/local/tomcat/webapps
 
-  express:
-    build:
-      context: .
-      dockerfile: Dockerfile.express
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./express:/usr/src/app
-      - ./express/server.js:/usr/src/app/server.js
-      - ./express/package.json:/usr/src/app/package.json
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    env_file:
-      - .env
-    networks:
-      - app_network
-
   mysql:
     build:
       context: .
