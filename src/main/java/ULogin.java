@@ -1,11 +1,11 @@
 import java.io.IOException;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet("/ULogin")
 public class ULogin extends HttpServlet {
@@ -27,12 +27,12 @@ public class ULogin extends HttpServlet {
         System.out.println("password: " + password);
 
         if (isValidUser) {
-            response.getWriter().write("Login successful! Welcome, " + username);
+            // response.getWriter().write("Login successful! Welcome, " + username);
             
             // This code sends you to home page if login is a success            
-            RequestDispatcher dispatcher = request.getRequestDispatcher("homePage.jsp");
-            request.setAttribute("username", username); 
-            dispatcher.forward(request, response);
+            HttpSession session = request.getSession();
+            session.setAttribute("username", username);
+            response.sendRedirect("homePage.jsp");
             
         } else {
             response.sendRedirect("loginPage.jsp?error=1");
