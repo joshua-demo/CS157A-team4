@@ -174,24 +174,33 @@ public class TaskDao {
 
 	// Method to delete a task by task_id
 	public boolean deleteTask(int taskId, String userId) {
-		// Implement delete task with user verification
-		loadDriver(dbdriver);
-		Connection con = getConnection();
+    loadDriver(dbdriver);
+    Connection con = getConnection();
 
-		String sql = "DELETE t.*, p.* FROM task t " +  // Updated to also delete from performs table
-                 "JOIN performs p ON t.task_id = p.task_id " +
-                 "WHERE p.user_id = ? AND t.task_id = ?";
-		try {
-				PreparedStatement ps = con.prepareStatement(sql);
-				ps.setString(1, userId);
-				ps.setInt(2, taskId);
+    // Using proper MySQL multi-table delete syntax
+    String sql = "DELETE task, performs FROM task " +
+                "INNER JOIN performs ON task.task_id = performs.task_id " +
+                "WHERE performs.user_id = ? AND task.task_id = ?";
+    
+    try {
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, userId);
+        ps.setInt(2, taskId);
 
-				int rowsDeleted = ps.executeUpdate();
-				return rowsDeleted > 0;
-		} catch (SQLException e) {
-				e.printStackTrace();
-		}
-		return false;
+        int rowsDeleted = ps.executeUpdate();
+        return rowsDeleted > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (con != null) {
+                con.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    return false;
 	}
 
 }
