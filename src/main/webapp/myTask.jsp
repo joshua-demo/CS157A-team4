@@ -238,7 +238,7 @@
         
         // Function to navigate to task workstation
         function navigateToWorkstation(taskId) {
-            window.location.href = 'taskWorkstation.jsp?taskId=' + taskId;
+            window.location.href = 'UWorkStation?taskId=${taskId}' + taskId;
         }
     </script>
 </body>

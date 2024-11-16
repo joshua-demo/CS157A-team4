@@ -7,9 +7,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet("/UWorkstation")
-public class UWorkstation extends HttpServlet {
+@WebServlet("/UWorkStation")
+public class UWorkStation extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
+    public UWorkStation() {
+        super();
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -30,7 +39,7 @@ public class UWorkstation extends HttpServlet {
 
             if (task != null) {
                 request.setAttribute("task", task);
-                request.getRequestDispatcher("workstation.jsp").forward(request, response);
+                request.getRequestDispatcher("taskWorkstation.jsp").forward(request, response);
             } else {
                 response.sendRedirect("myTask.jsp");
             }
