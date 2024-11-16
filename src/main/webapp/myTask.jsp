@@ -125,10 +125,9 @@
                     </thead>
                     <tbody class="text-gray-600 text-sm font-light">
                         <c:forEach var="task" items="${taskList}">
-                            <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer">
+                            <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer" onclick="navigateToWorkstation('${task.taskId}')">
                                 <td class="py-3 px-6 text-left whitespace-nowrap">${task.taskId}</td>
                                 <td class="py-3 px-6 text-left whitespace-nowrap">${task.taskName}</td>
-                                <!-- <td class="py-3 px-6 text-left">${task.description}</td> -->
                                 <td class="py-3 px-6 text-left">${task.dueDate}</td>
                                 <td class="py-3 px-6 text-left">
                                     <span class="
@@ -235,6 +234,11 @@
                 // Refresh tasks after 1 second (same as add task)
                 setTimeout(refreshTasks, 1000);
             }
+        }
+        
+        // Function to navigate to task workstation
+        function navigateToWorkstation(taskId) {
+            window.location.href = 'taskWorkstation.jsp?taskId=' + taskId;
         }
     </script>
 </body>

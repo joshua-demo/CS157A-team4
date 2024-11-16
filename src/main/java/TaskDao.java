@@ -176,19 +176,26 @@ public class TaskDao {
 	public boolean deleteTask(int taskId, String userId) {
     loadDriver(dbdriver);
     Connection con = getConnection();
-
-    // Using proper MySQL multi-table delete syntax
-    String sql = "DELETE task, performs FROM task " +
-                "INNER JOIN performs ON task.task_id = performs.task_id " +
-                "WHERE performs.user_id = ? AND task.task_id = ?";
+    
+    // Delete from performs table first (to handle foreign key constraints)
+    String deletePerformsSql = "DELETE FROM performs WHERE user_id = ? AND task_id = ?";
+    // Then delete from task table
+    String deleteTaskSql = "DELETE FROM task WHERE task_id = ?";
     
     try {
-        PreparedStatement ps = con.prepareStatement(sql);
-        ps.setString(1, userId);
-        ps.setInt(2, taskId);
-
-        int rowsDeleted = ps.executeUpdate();
+        // First delete from performs table
+        PreparedStatement psPerform = con.prepareStatement(deletePerformsSql);
+        psPerform.setString(1, userId);
+        psPerform.setInt(2, taskId);
+        psPerform.executeUpdate();
+        
+        // Then delete from task table
+        PreparedStatement psTask = con.prepareStatement(deleteTaskSql);
+        psTask.setInt(1, taskId);
+        int rowsDeleted = psTask.executeUpdate();
+        
         return rowsDeleted > 0;
+        
     } catch (SQLException e) {
         e.printStackTrace();
     } finally {
