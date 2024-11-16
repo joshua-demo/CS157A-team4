@@ -114,23 +114,46 @@
                 <table class="min-w-full bg-white shadow-md rounded-lg">
                     <thead>
                         <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Task ID</th>
                             <th class="py-3 px-6 text-left">Task Name</th>
-                            <th class="py-3 px-6 text-left">Description</th>
                             <th class="py-3 px-6 text-left">Due Date</th>
                             <th class="py-3 px-6 text-left">Priority</th>
                             <th class="py-3 px-6 text-left">Status</th>
                             <th class="py-3 px-6 text-left">Type</th>
+                            <th class="py-3 px-6 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-gray-600 text-sm font-light">
                         <c:forEach var="task" items="${taskList}">
-                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer" onclick="navigateToWorkstation('${task.taskId}')">
+                                <td class="py-3 px-6 text-left whitespace-nowrap">${task.taskId}</td>
                                 <td class="py-3 px-6 text-left whitespace-nowrap">${task.taskName}</td>
-                                <td class="py-3 px-6 text-left">${task.description}</td>
                                 <td class="py-3 px-6 text-left">${task.dueDate}</td>
-                                <td class="py-3 px-6 text-left">${task.priority}</td>
-                                <td class="py-3 px-6 text-left">${task.status}</td>
+                                <td class="py-3 px-6 text-left">
+                                    <span class="
+                                        px-2 py-1 rounded-full text-xs
+                                        ${task.priority eq 'High' ? 'bg-red-200 text-red-800' : 
+                                        task.priority eq 'Medium' ? 'bg-yellow-200 text-yellow-800' : 
+                                        'bg-green-200 text-green-800'}">
+                                        ${task.priority}
+                                    </span>
+                                </td>
+                                <td class="py-3 px-6 text-left">
+                                    <span class="
+                                        px-2 py-1 rounded-full text-xs
+                                        ${task.status eq 'Completed' ? 'bg-green-200 text-green-800' : 
+                                        task.status eq 'Overdue' ? 'bg-red-200 text-red-800' : 
+                                        'bg-yellow-200 text-yellow-800'}">
+                                        ${task.status}
+                                    </span>
+                                </td>
                                 <td class="py-3 px-6 text-left">${task.type}</td>
+                                <td class="py-3 px-6 text-left">
+                                    <button onclick="deleteTask('${task.taskId}')" 
+                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                                        Delete
+                                    </button>
+                                </td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -188,6 +211,35 @@
                 refreshTasks();
             }
         });
+    
+        // Function to delete task
+        function deleteTask(taskId) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                // Create a form
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = 'UDeleteTask';
+        
+                // Add taskId input
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'taskId';
+                input.value = taskId;
+                form.appendChild(input);
+        
+                // Add the form to the document and submit it
+                document.body.appendChild(form);
+                form.submit();
+        
+                // Refresh tasks after 1 second (same as add task)
+                setTimeout(refreshTasks, 1000);
+            }
+        }
+        
+        // Function to navigate to task workstation
+        function navigateToWorkstation(taskId) {
+            window.location.href = 'UWorkStation?taskId=${taskId}' + taskId;
+        }
     </script>
 </body>
 </html>

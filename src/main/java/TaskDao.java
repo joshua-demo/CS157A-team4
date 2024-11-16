@@ -109,4 +109,105 @@ public class TaskDao {
 			return taskList;
 	}
 
+	// Method to retrieve a specific task by task_id
+	public Task getTaskById(int taskId, String userId) {
+		// Implement get task by ID with user verification
+		loadDriver(dbdriver);
+		Connection con = getConnection();
+
+		String sql = "SELECT t.task_id, t.task_name, t.description, t.due_date, t.priority, t.status, t.type " +
+									"FROM task t " +
+									"JOIN performs p ON t.task_id = p.task_id " +
+									"WHERE p.user_id = ? AND t.task_id = ?";
+		try {
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setString(1, userId);
+				ps.setInt(2, taskId);
+				ResultSet rs = ps.executeQuery();
+
+				if (rs.next()) {
+						Task task = new Task();
+						task.setTaskId(rs.getInt("task_id"));
+						task.setTaskName(rs.getString("task_name"));
+						task.setDescription(rs.getString("description"));
+						task.setDueDate(rs.getDate("due_date").toLocalDate());
+						task.setPriority(rs.getString("priority"));
+						task.setStatus(rs.getString("status"));
+						task.setType(rs.getString("type"));
+
+						return task;
+				}
+		} catch (SQLException e) {
+				e.printStackTrace();
+		}
+		return null;
+	}
+
+	// Method to update a task by task_id
+	public boolean updateTask(Task task, String userId) {
+		// Implement update task with user verification
+		loadDriver(dbdriver);
+		Connection con = getConnection();
+
+		String sql = "UPDATE task t " +
+									"JOIN performs p ON t.task_id = p.task_id " +
+									"SET t.task_name = ?, t.description = ?, t.due_date = ?, t.priority = ?, t.status = ?, t.type = ? " +
+									"WHERE p.user_id = ? AND t.task_id = ?";
+		try {
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setString(1, task.getTaskName());
+				ps.setString(2, task.getDescription());
+				ps.setDate(3, java.sql.Date.valueOf(task.getDueDate()));
+				ps.setString(4, task.getPriority());
+				ps.setString(5, task.getStatus());
+				ps.setString(6, task.getType());
+				ps.setString(7, userId);
+				ps.setInt(8, task.getTaskId());
+
+				int rowsUpdated = ps.executeUpdate();
+				return rowsUpdated > 0;
+		} catch (SQLException e) {
+				e.printStackTrace();
+		}
+		return false;
+	}
+
+	// Method to delete a task by task_id
+	public boolean deleteTask(int taskId, String userId) {
+    loadDriver(dbdriver);
+    Connection con = getConnection();
+    
+    // Delete from performs table first (to handle foreign key constraints)
+    String deletePerformsSql = "DELETE FROM performs WHERE user_id = ? AND task_id = ?";
+    // Then delete from task table
+    String deleteTaskSql = "DELETE FROM task WHERE task_id = ?";
+    
+    try {
+        // First delete from performs table
+        PreparedStatement psPerform = con.prepareStatement(deletePerformsSql);
+        psPerform.setString(1, userId);
+        psPerform.setInt(2, taskId);
+        psPerform.executeUpdate();
+        
+        // Then delete from task table
+        PreparedStatement psTask = con.prepareStatement(deleteTaskSql);
+        psTask.setInt(1, taskId);
+        int rowsDeleted = psTask.executeUpdate();
+        
+        return rowsDeleted > 0;
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (con != null) {
+                con.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    return false;
+	}
+
 }
