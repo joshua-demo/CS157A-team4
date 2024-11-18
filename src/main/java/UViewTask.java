@@ -35,7 +35,6 @@ public class UViewTask extends HttpServlet {
         
         // Forward to the JSP page that will display the tasks
         request.getRequestDispatcher("myTask.jsp").forward(request, response);
-        response.sendRedirect("myTask.jsp");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
