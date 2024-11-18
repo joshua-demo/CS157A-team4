@@ -153,35 +153,6 @@ public class TaskDao {
 		return null;
 	}
 
-	// Method to update a task by task_id
-	public boolean updateTask(Task task, String userId) {
-		// Implement update task with user verification
-		loadDriver(dbdriver);
-		Connection con = getConnection();
-
-		String sql = "UPDATE task t " +
-									"JOIN performs p ON t.task_id = p.task_id " +
-									"SET t.task_name = ?, t.description = ?, t.due_date = ?, t.priority = ?, t.status = ?, t.type = ? " +
-									"WHERE p.user_id = ? AND t.task_id = ?";
-		try {
-				PreparedStatement ps = con.prepareStatement(sql);
-				ps.setString(1, task.getTaskName());
-				ps.setString(2, task.getDescription());
-				ps.setDate(3, java.sql.Date.valueOf(task.getDueDate()));
-				ps.setString(4, task.getPriority());
-				ps.setString(5, task.getStatus());
-				ps.setString(6, task.getType());
-				ps.setString(7, userId);
-				ps.setInt(8, task.getTaskId());
-
-				int rowsUpdated = ps.executeUpdate();
-				return rowsUpdated > 0;
-		} catch (SQLException e) {
-				e.printStackTrace();
-		}
-		return false;
-	}
-
 	// Method to delete a task by task_id
 	public boolean deleteTask(int taskId, String userId) {
     loadDriver(dbdriver);
