@@ -60,9 +60,9 @@
                         <h3 class="text-lg font-semibold mb-2">Notes</h3>
                         <form action="UpdateNotes" method="post" class="space-y-2">
                             <input type="hidden" name="taskId" value="${task.taskId}">
-                            <textarea name="notes" 
+                            <textarea name="quickNote" 
                                     class="w-full min-h-[100px] p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Add your notes here...">${task.notes}</textarea>
+                                    placeholder="Add your notes here...">${task.quickNote}</textarea>
                             <button type="submit" 
                                     class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -81,29 +81,56 @@
                             <h3 class="text-lg font-semibold">Resources</h3>
                             <button onclick="toggleResourceModal()" 
                                     class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="12" y1="5" x2="12" y2="19"/>
                                     <line x1="5" y1="12" x2="19" y2="12"/>
                                 </svg>
                                 Add Resource
                             </button>
                         </div>
+                        
+                        <!-- Resource List -->
                         <ul class="space-y-2">
                             <c:forEach var="resource" items="${task.resources}">
-                                <li>
+                                <li class="flex justify-between items-center">
                                     <a href="${resource.url}" target="_blank" rel="noopener noreferrer" 
-                                       class="flex items-center space-x-2 text-blue-500 hover:underline">
+                                    class="flex items-center space-x-2 text-blue-500 hover:underline">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" 
-                                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            stroke="currentColor" stroke-width="2">
                                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                                             <polyline points="15 3 21 3 21 9"/>
                                             <line x1="10" y1="14" x2="21" y2="3"/>
                                         </svg>
-                                        <span>${resource.label}</span>
+                                        <span>${resource.url}</span>
                                     </a>
+                                    <form action="ResourceServlet" method="post" class="inline">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="taskId" value="${task.taskId}">
+                                        <input type="hidden" name="resourceId" value="${resource.id}">
+                                        <button type="submit" class="text-red-500 hover:text-red-700">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <path d="M18 6L6 18M6 6l12 12"/>
+                                            </svg>
+                                        </button>
+                                    </form>
                                 </li>
                             </c:forEach>
                         </ul>
+                        
+                        <!-- Add Resource Form -->
+                        <form action="ResourceServlet" method="post" class="mt-4">
+                            <input type="hidden" name="action" value="add">
+                            <input type="hidden" name="taskId" value="${task.taskId}">
+                            <div class="flex gap-2">
+                                <input type="url" name="url" required
+                                    class="flex-1 p-2 border rounded-md"
+                                    placeholder="Enter resource URL">
+                                <button type="submit" 
+                                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                                    Add
+                                </button>
+                            </div>
+                        </form>
                     </div>
 
                     <!-- Progress Section -->
