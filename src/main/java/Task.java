@@ -8,6 +8,8 @@ public class Task {
     private String priority;           // Corresponds to priority (enum: 'Low', 'Medium', 'High')
     private String status;             // Corresponds to status (enum: 'Pending', 'Completed', 'Overdue')
     private String type;               // Corresponds to type
+    private String quickNote;    // Added field
+    private int progress;        // Added field
 
     // Constructor
     public Task(int taskId, String taskName, String description, LocalDate dueDate, String priority, String status, String type) {
@@ -78,6 +80,22 @@ public class Task {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getQuickNote() {
+        return quickNote;
+    }
+    
+    public void setQuickNote(String quickNote) {
+        this.quickNote = quickNote;
+    }
+    
+    public int getProgress() {
+        return progress;
+    }
+    
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 
     @Override
