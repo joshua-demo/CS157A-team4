@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.util.List;
 
 public class Task {
     private int taskId;               // Corresponds to task_id (Primary Key, Auto Increment)
@@ -8,6 +9,9 @@ public class Task {
     private String priority;           // Corresponds to priority (enum: 'Low', 'Medium', 'High')
     private String status;             // Corresponds to status (enum: 'Pending', 'Completed', 'Overdue')
     private String type;               // Corresponds to type
+    private String quickNote;    // Added field
+    private int progress;        // Added field
+    private List<Resource> resources;  // Add this field
 
     // Constructor
     public Task(int taskId, String taskName, String description, LocalDate dueDate, String priority, String status, String type) {
@@ -78,6 +82,30 @@ public class Task {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getQuickNote() {
+        return quickNote;
+    }
+    
+    public void setQuickNote(String quickNote) {
+        this.quickNote = quickNote;
+    }
+    
+    public int getProgress() {
+        return progress;
+    }
+    
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public List<Resource> getResources() {
+        return resources;
+    }
+    
+    public void setResources(List<Resource> resources) {
+        this.resources = resources;
     }
 
     @Override
