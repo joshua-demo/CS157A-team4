@@ -6,10 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet("/ResourceServlet")
-public class ResourceServlet extends HttpServlet {
+@WebServlet("/UpdateDescription")
+public class UpdateDescription extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
@@ -18,33 +18,18 @@ public class ResourceServlet extends HttpServlet {
             response.sendRedirect("loginPage.jsp");
             return;
         }
-        
+
         String userId = (String) session.getAttribute("username");
-        String action = request.getParameter("action");
         String taskIdStr = request.getParameter("taskId");
-        
+        String description = request.getParameter("description");
+
         try {
             int taskId = Integer.parseInt(taskIdStr);
             TaskDao taskDao = new TaskDao();
-            
-            if ("add".equals(action)) {
-                String url = request.getParameter("url");
-                String displayText = request.getParameter("displayText");
-                
-                // If displayText is empty, use the URL as display text
-                if (displayText == null || displayText.trim().isEmpty()) {
-                    displayText = url;
-                }                
-                taskDao.addResource(taskId, url, displayText);
-            } else if ("delete".equals(action)) {
-                String resourceIdStr = request.getParameter("resourceId");
-                int resourceId = Integer.parseInt(resourceIdStr);
-                taskDao.deleteResource(resourceId, userId);
-            }
+            taskDao.updateTaskDescription(taskId, userId, description);
             
             response.sendRedirect("UWorkStation?taskId=" + taskId);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
             response.sendRedirect("myTask.jsp");
         }
     }

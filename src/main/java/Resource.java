@@ -2,15 +2,18 @@ public class Resource {
   private int id;
   private int taskId;
   private String url;
+  private String displayText;
+  
   
   // Default constructor
   public Resource() {}
   
   // Constructor with parameters
-  public Resource(int id, int taskId, String url) {
+  public Resource(int id, int taskId, String url, String displayText) {
       this.id = id;
       this.taskId = taskId;
       this.url = url;
+      this.displayText = displayText;
   }
   
   // Getters and Setters
@@ -36,5 +39,13 @@ public class Resource {
   
   public void setUrl(String url) {
       this.url = url;
+  }
+  
+  public String getDisplayText() {
+      return displayText != null ? displayText : url;  // Fallback to URL if displayText is null
+  }
+  
+  public void setDisplayText(String displayText) {
+      this.displayText = displayText;
   }
 }
