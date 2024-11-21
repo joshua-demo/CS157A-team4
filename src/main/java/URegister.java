@@ -39,7 +39,7 @@ public class URegister extends HttpServlet {
 		User user = new User(userID, name, email, password);
 		UserRegisterDao urDao = new UserRegisterDao();
 		String result = urDao.insert(user);
-		response.getWriter().print(result);
+		response.sendRedirect("loginPage.jsp");
 	}
 
 }

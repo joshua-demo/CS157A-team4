@@ -18,6 +18,8 @@
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
+    <!-- Include the navigation bar -->
+    <jsp:include page="navbar.jsp" />
     <div class="container mx-auto p-6">
         <h1 class="text-3xl font-bold text-gray-800 mb-6">Manage My Courses</h1>
 

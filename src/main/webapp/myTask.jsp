@@ -18,6 +18,8 @@
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
+    <!-- Include the navigation bar -->
+    <jsp:include page="navbar.jsp" />
     <div class="container mx-auto p-6">
         <h1 class="text-3xl font-bold text-gray-800 mb-6">Manage My Tasks</h1>
 
@@ -114,8 +116,8 @@
                 <table class="min-w-full bg-white shadow-md rounded-lg">
                     <thead>
                         <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                            <th class="py-3 px-6 text-left">Task ID</th>
                             <th class="py-3 px-6 text-left">Task Name</th>
+                            <th class="py-3 px-6 text-left">Description</th>
                             <th class="py-3 px-6 text-left">Due Date</th>
                             <th class="py-3 px-6 text-left">Priority</th>
                             <th class="py-3 px-6 text-left">Status</th>
@@ -126,8 +128,8 @@
                     <tbody class="text-gray-600 text-sm font-light">
                         <c:forEach var="task" items="${taskList}">
                             <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer" onclick="navigateToWorkstation('${task.taskId}')">
-                                <td class="py-3 px-6 text-left whitespace-nowrap">${task.taskId}</td>
                                 <td class="py-3 px-6 text-left whitespace-nowrap">${task.taskName}</td>
+                                <td class="py-3 px-6 text-left whitespace-nowrap">${task.description}</td>
                                 <td class="py-3 px-6 text-left">${task.dueDate}</td>
                                 <td class="py-3 px-6 text-left">
                                     <span class="
@@ -149,7 +151,7 @@
                                 </td>
                                 <td class="py-3 px-6 text-left">${task.type}</td>
                                 <td class="py-3 px-6 text-left">
-                                    <button onclick="deleteTask('${task.taskId}')" 
+                                    <button onclick="handleDeleteClick(event, '${task.taskId}')" 
                                             class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
                                         Delete
                                     </button>
@@ -212,8 +214,10 @@
             }
         });
     
-        // Function to delete task
-        function deleteTask(taskId) {
+        function handleDeleteClick(event, taskId) {
+            // Stop the event from bubbling up to the row
+            event.stopPropagation();
+            
             if (confirm('Are you sure you want to delete this task?')) {
                 // Create a form
                 const form = document.createElement('form');
@@ -231,7 +235,7 @@
                 document.body.appendChild(form);
                 form.submit();
         
-                // Refresh tasks after 1 second (same as add task)
+                // Refresh tasks after 1 second
                 setTimeout(refreshTasks, 1000);
             }
         }

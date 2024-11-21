@@ -10,7 +10,7 @@ public class CourseDao {
 	
 	private String dburl="jdbc:mysql://localhost:3306/studysmart";
 	private String dbuname="root";
-	private String dbpassword="$Iamroot$"; //Remember to put your own password
+	private String dbpassword="#Ben01226723853"; //Remember to put your own password
 	private String dbdriver="com.mysql.jdbc.Driver";
 	
 	 public void loadDriver(String dbdriver){

@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,8 +39,12 @@ public class UWorkStation extends HttpServlet {
             TaskDao taskDao = new TaskDao();
             Task task = taskDao.getTaskById(taskId, userId);
 
+            CourseDao courseDao = new CourseDao();
+            List<Course> courses = courseDao.getCourseByUserId(userId);
+
             if (task != null) {
                 request.setAttribute("task", task);
+                request.setAttribute("courses", courses);
                 request.getRequestDispatcher("taskWorkstation.jsp").forward(request, response);
             } else {
                 response.sendRedirect("myTask.jsp");
