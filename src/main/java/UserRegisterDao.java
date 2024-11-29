@@ -32,9 +32,10 @@ public class UserRegisterDao {
 		String sql="insert into user values(?,?,?,?,?)";
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, user.getuser_id());  
-			ps.setString(2, user.getEmail());
-			ps.setString(3, user.getName());
+			//ps.setString(1, user.getuser_id()); //may change to setString later?
+			ps.setString(1, user.getuser_id());  //temp
+			ps.setString(2, user.getName());
+			ps.setString(3, user.getEmail());
 			ps.setString(4, user.getPassword());
 			ps.setString(5, user.getProfile_date_created());
 			ps.executeUpdate();
