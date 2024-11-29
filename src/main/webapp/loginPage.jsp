@@ -12,6 +12,12 @@
         .alert-danger {
             border: 2px solid red;
         }
+        
+        .alert-success {
+		    background-color: #28a745;
+		    color: white;
+		}
+        
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -24,6 +30,7 @@
                 Invalid username or password!
             </div>
         <% } %>
+        
         <form action="ULogin" method="post" class="space-y-4">
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-700">Username</label>

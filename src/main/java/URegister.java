@@ -4,6 +4,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class URegister
@@ -39,6 +40,20 @@ public class URegister extends HttpServlet {
 		User user = new User(userID, name, email, password);
 		UserRegisterDao urDao = new UserRegisterDao();
 		String result = urDao.insert(user);
+		
+		boolean isValidUser = urDao.validateUser(name, password);
+		
+		if (isValidUser) {
+            
+            // This code sends you to home page if login is a success            
+            HttpSession session = request.getSession();
+            session.setAttribute("username", name);
+            response.sendRedirect("homePage.jsp");
+            
+        } else {
+            response.sendRedirect("loginPage.jsp?error=1");
+        }
+		
 		response.getWriter().print(result);
 	}
 
