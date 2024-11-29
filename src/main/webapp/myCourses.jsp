@@ -19,6 +19,15 @@
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="container mx-auto p-6">
+    
+    	<!-- Back Button -->
+        <a href="homePage.jsp" class="flex items-center text-blue-500 font-bold mb-6">
+            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+        </a>
+	    
         <h1 class="text-3xl font-bold text-gray-800 mb-6">Manage My Courses</h1>
 
         <!-- Button to open modal -->
