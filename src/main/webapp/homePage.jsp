@@ -1,58 +1,113 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>StudySmart - Home</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        .min-h-screen {
+            min-height: 100vh;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <header class="bg-blue-600 text-white p-6 text-center">
-        <h1 class="text-4xl font-bold" id="study-smart">StudySmart</h1>
-        <h2 class="text-xl mt-2" id="home-page">Home Page</h2>
+<body class="bg-gray-100 font-sans flex flex-col min-h-screen">
+    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-4xl font-bold" id="study-smart">
+                <i class="fas fa-graduation-cap mr-2"></i>StudySmart
+            </h1>
+            <nav>
+                <a href="loginPage.jsp" class="text-white hover:text-blue-200 ml-4">Logout</a>
+            </nav>
+        </div>
     </header>
 
-    <main class="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-        <section class="mb-6">
-            <a href="myProfile.jsp">
-                <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-                    My Profile
-                </button>
+    <main class="flex-grow max-w-6xl mx-auto mt-8 p-6">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-6">Welcome back, ${homePageData.name}!</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a href="myProfile.jsp" class="transform transition duration-500 hover:scale-105">
+                <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+                    <i class="fas fa-user-circle text-5xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-800">My Profile</h3>
+                    <p class="text-gray-600 mt-2 text-center">View and edit your personal information</p>
+                </div>
             </a>
-        </section>
-
-        <section class="mb-6">
-            <a href="myCourses.jsp">
-                <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-                    My Courses
-                </button>
+            
+            <a href="myCourses.jsp" class="transform transition duration-500 hover:scale-105">
+                <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+                    <i class="fas fa-book text-5xl text-green-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-800">My Courses</h3>
+                    <p class="text-gray-600 mt-2 text-center">Manage your enrolled courses</p>
+                </div>
             </a>
-        </section>
-
-        <section class="mb-6">
-            <a href="myStudySessions.jsp">
-                <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-                    My Study Sessions
-                </button>
+            
+            <a href="myStudySessions.jsp" class="transform transition duration-500 hover:scale-105">
+                <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+                    <i class="fas fa-clock text-5xl text-purple-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-800">Study Sessions</h3>
+                    <p class="text-gray-600 mt-2 text-center">Schedule and track your study sessions</p>
+                </div>
             </a>
-        </section>
-
-        <section class="mb-6">
-            <a href="myExtracurriculars.jsp">
-                <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-                    My Extracurriculars
-                </button>
+            
+            <a href="myExtracurriculars.jsp" class="transform transition duration-500 hover:scale-105">
+                <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+                    <i class="fas fa-puzzle-piece text-5xl text-yellow-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-800">Extracurriculars</h3>
+                    <p class="text-gray-600 mt-2 text-center">Manage your extracurricular activities</p>
+                </div>
             </a>
-        </section>
-
-        <section>
-            <a href="myTask.jsp">
-                <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
-                    My Tasks
-                </button>
+            
+            <a href="myTask.jsp" class="transform transition duration-500 hover:scale-105">
+                <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
+                    <i class="fas fa-tasks text-5xl text-red-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-800">My Tasks</h3>
+                    <p class="text-gray-600 mt-2 text-center">Organize and track your to-do list</p>
+                </div>
             </a>
-        </section>
+            
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">My Stats</h3>
+                <ul class="space-y-2">
+                    <li class="flex justify-between">
+                        <span class="text-gray-600">Courses Enrolled:</span>
+                        <span class="font-semibold">${homePageData.coursesEnrolled}</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="text-gray-600">Upcoming Tasks:</span>
+                        <span class="font-semibold">${homePageData.numberOfTasks}</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="text-gray-600">Study Hours This Week:</span>
+                        <span class="font-semibold">12.5</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-auto">
+        <div class="max-w-6xl mx-auto text-center">
+            <p>&copy; 2024 StudySmart. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+    
+	    function refreshHome() {
+	        window.location.href = 'UViewHome';
+	    }
+
+    
+	    document.addEventListener('DOMContentLoaded', function() {
+	        if (!window.location.href.includes('UViewHome')) {
+	            refreshHome();
+	        }
+	    });
+
+    </script>
 </body>
 </html>
