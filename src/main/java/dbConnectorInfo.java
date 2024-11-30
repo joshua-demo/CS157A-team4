@@ -15,7 +15,7 @@ public class dbConnectorInfo {
 	
 	private static String dburl="jdbc:mysql://localhost:3306/studysmart";
 	private static String dbuname="root";
-	private static String dbpassword="$Iamroot$"; //Remember to put your own password
+	private static String dbpassword="#Ben01226723853"; //Remember to put your own password
 	private static String dbdriver="com.mysql.jdbc.Driver";
 	
 	public static String dburl() {

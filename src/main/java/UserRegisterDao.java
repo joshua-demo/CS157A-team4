@@ -5,18 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserRegisterDao {
-<<<<<<< HEAD
-	private String dburl="jdbc:mysql://localhost:3306/studysmart";
-	private String dbuname="root";
-	private String dbpassword="#Ben01226723853"; //Remember to put your own password
-	private String dbdriver="com.mysql.jdbc.Driver";
-=======
 	private String dburl= dbConnectorInfo.dburl();
 	private String dbuname= dbConnectorInfo.dbuname();
 	private String dbpassword= dbConnectorInfo.dbpassword(); //Remember to put your own password
 	private String dbdriver= dbConnectorInfo.dbdriver();
 	
->>>>>>> 37b3a94e215ee4587f168390791862f132f6136b
 	public void loadDriver(String dbdriver){
 		try{
 			Class.forName(dbdriver);
