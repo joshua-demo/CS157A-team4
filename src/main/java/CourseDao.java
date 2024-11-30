@@ -8,10 +8,10 @@ import java.util.List;
 
 public class CourseDao {
 	
-	private String dburl="jdbc:mysql://localhost:3306/studysmart";
-	private String dbuname="root";
-	private String dbpassword="#Ben01226723853"; //Remember to put your own password
-	private String dbdriver="com.mysql.jdbc.Driver";
+	private String dburl= dbConnectorInfo.dburl();
+	private String dbuname= dbConnectorInfo.dbuname();
+	private String dbpassword= dbConnectorInfo.dbpassword(); //Remember to put your own password
+	private String dbdriver= dbConnectorInfo.dbdriver();
 	
 	 public void loadDriver(String dbdriver){
 			try{
@@ -68,6 +68,14 @@ public class CourseDao {
 			} catch (SQLException e) {
 					e.printStackTrace();
 					result = "course not entered";
+			} finally {
+		        try {
+		            if (con != null) {
+		                con.close();
+		            }
+		        } catch (SQLException e) {
+		            e.printStackTrace();
+		        }
 			}
 			
 			return result;
@@ -127,8 +135,15 @@ public class CourseDao {
 					}
 			} catch (SQLException e) {
 					e.printStackTrace();
+			} finally {
+		        try {
+		            if (con != null) {
+		                con.close();
+		            }
+		        } catch (SQLException e) {
+		            e.printStackTrace();
+		        }
 			}
-			
 			return courseList;
 	}
 }
