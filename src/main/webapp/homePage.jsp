@@ -20,8 +20,13 @@
                 <i class="fas fa-graduation-cap mr-2"></i>StudySmart
             </h1>
             <nav>
-                <a href="loginPage.jsp" class="text-white hover:text-blue-200 ml-4">Logout</a>
-            </nav>
+			    <form action="ULogout" method="post" class="inline-block">
+			        <button type="submit" 
+			                class="text-white-500 font-bold hover:underline focus:outline-none">
+			            Logout
+			        </button>
+			    </form>
+			</nav>
         </div>
     </header>
 
