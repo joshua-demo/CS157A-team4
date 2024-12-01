@@ -407,4 +407,92 @@ public class TaskDao {
 			}
 	}
 
+	// Add method to link a task to a course
+	public boolean linkTaskToCourse(int taskId, int courseId) {
+    loadDriver(dbdriver);
+    Connection con = getConnection();
+    
+    String sql = "INSERT INTO tasktodo (task_id, course_id) VALUES (?, ?) " +
+                 "ON DUPLICATE KEY UPDATE course_id = ?";
+    
+    try {
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, taskId);
+        ps.setInt(2, courseId);
+        ps.setInt(3, courseId);
+        
+        int rowsAffected = ps.executeUpdate();
+        return rowsAffected > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    return false;
+	}
+
+	// Add method to unlink a task from a course
+	public boolean unlinkTaskFromCourse(int taskId) {
+			loadDriver(dbdriver);
+			Connection con = getConnection();
+			
+			String sql = "DELETE FROM tasktodo WHERE task_id = ?";
+			
+			try {
+					PreparedStatement ps = con.prepareStatement(sql);
+					ps.setInt(1, taskId);
+					
+					int rowsAffected = ps.executeUpdate();
+					return rowsAffected > 0;
+			} catch (SQLException e) {
+					e.printStackTrace();
+			} finally {
+					try {
+							if (con != null) con.close();
+					} catch (SQLException e) {
+							e.printStackTrace();
+					}
+			}
+			return false;
+	}
+
+	// Add method to get linked course
+	public Course getLinkedCourse(int taskId) {
+			loadDriver(dbdriver);
+			Connection con = getConnection();
+			
+			String sql = "SELECT c.* FROM course c " +
+									"JOIN tasktodo tt ON c.course_id = tt.course_id " +
+									"WHERE tt.task_id = ?";
+			
+			try {
+					PreparedStatement ps = con.prepareStatement(sql);
+					ps.setInt(1, taskId);
+					
+					ResultSet rs = ps.executeQuery();
+					if (rs.next()) {
+							Course course = new Course();
+							course.setCourseId(rs.getInt("course_id"));
+							course.setCourseName(rs.getString("name"));
+							course.setInstructor(rs.getString("instructor"));
+							course.setStart_date(rs.getDate("start_date").toLocalDate());
+							course.setEnd_date(rs.getDate("end_date").toLocalDate());
+							return course;
+					}
+			} catch (SQLException e) {
+					e.printStackTrace();
+			} finally {
+					try {
+							if (con != null) con.close();
+					} catch (SQLException e) {
+							e.printStackTrace();
+					}
+			}
+			return null;
+	}
+
 }

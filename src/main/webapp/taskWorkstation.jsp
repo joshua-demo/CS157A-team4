@@ -207,24 +207,49 @@
                                 </div>
                             </div>
                             
-                            <!-- Lecture note Section using google docs API  -->
+                            <!-- Link to the existing course  -->
+                            <!-- Course Link Section -->
                             <div>
-                                <h3 class="text-lg font-semibold mb-2">Lecture Note</h3>
-                                <button onclick="toggleLectureNoteForm()" 
-                                        class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <line x1="12" y1="5" x2="12" y2="19"/>
-                                        <line x1="5" y1="12" x2="19" y2="12"/>
-                                    </svg>
-                                    Add Lecture Note
-                                </button>
-                                <a href="https://docs.google.com/document/d/1_hpU_o6dFJ-cb7Me0VXwqbxiIHtj0IVyS7d7IPheR50/edit?tab=t.0">
-                                    <span>CS-157A note</span>
-                                </a>
-                                <!-- Choose related course from course table and then link the task with the course using tasktodo table-->
-                                <!-- Display the gg docs link (the lecture note from note table) if the course has any -->
-                                <!-- If not then create a gg docs note based on that lecture and add it to the note table -->
-                                <!-- Note table will have a reference to the course -->
+                                <h3 class="text-lg font-semibold mb-2">Course Link</h3>
+                                <div class="space-y-4">
+                                    <c:if test="${linkedCourse != null}">
+                                        <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+                                            <p class="text-sm text-blue-800">
+                                                Currently linked to: ${linkedCourse.courseName}
+                                            </p>
+                                            <form action="TaskCourseServlet" method="post" class="mt-2">
+                                                <input type="hidden" name="action" value="unlink">
+                                                <input type="hidden" name="taskId" value="${task.taskId}">
+                                                <button type="button" onclick="confirmUnlink(this.form)" 
+                                                        class="px-4 py-2 text-sm text-red-600 border border-red-300 rounded-md hover:bg-red-50">
+                                                    Unlink Course
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </c:if>
+                                    
+                                    <c:if test="${linkedCourse == null}">
+                                        <p class="text-sm text-gray-600">No course linked to this task.</p>
+                                        <form action="TaskCourseServlet" method="post">
+                                            <input type="hidden" name="action" value="link">
+                                            <input type="hidden" name="taskId" value="${task.taskId}">
+                                            <div class="flex items-center space-x-4">
+                                                <select name="courseId" 
+                                                        class="block w-full max-w-xs rounded-md border border-gray-300 py-2 px-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+                                                        required>
+                                                    <option value="">Select a course</option>
+                                                    <c:forEach var="course" items="${availableCourses}">
+                                                        <option value="${course.courseId}">${course.courseName}</option>
+                                                    </c:forEach>
+                                                </select>
+                                                <button type="submit" 
+                                                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm">
+                                                    Link Course
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </c:if>
+                                </div>
                             </div>
 
                             <!-- Progress Section -->
@@ -310,6 +335,12 @@
                         <circle cx="18" cy="16" r="3"/>
                     </svg>
                     Play Music`;
+            }
+        }
+
+        function confirmUnlink(form) {
+            if (confirm('Are you sure you want to unlink this course from the task?')) {
+                form.submit();
             }
         }
 
