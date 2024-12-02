@@ -31,6 +31,8 @@ public class UViewTask extends HttpServlet {
         
         // Call TaskDao with sorting and filtering parameters
         TaskDao taskDao = new TaskDao();
+
+        taskDao.updateOverdueTasks();
         List<Task> tasks = taskDao.getTasksByUserId(userId, sortBy, filterStatus);
         
         // Set the tasks and current filter/sort settings in request scope
