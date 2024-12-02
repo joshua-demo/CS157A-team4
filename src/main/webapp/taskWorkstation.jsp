@@ -210,7 +210,7 @@
                             <!-- Link to the existing course  -->
                             <!-- Course Link Section -->
                             <div>
-                                <h3 class="text-lg font-semibold mb-2">Course Link</h3>
+                                <h3 class="text-lg font-semibold mb-2">Related Course</h3>
                                 <div class="space-y-4">
                                     <c:if test="${linkedCourse != null}">
                                         <div class="bg-blue-50 border border-blue-200 rounded-md p-4">

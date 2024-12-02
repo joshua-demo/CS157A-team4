@@ -13,10 +13,10 @@ public class TaskCourseServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String userId = (String) session.getAttribute("userId");
+        String userId = (String) session.getAttribute("username");
         
         if (userId == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("loginPage.jsp");
             return;
         }
         
@@ -31,6 +31,6 @@ public class TaskCourseServlet extends HttpServlet {
         }
         
         // Redirect back to task workstation
-        response.sendRedirect("TaskWorkstationServlet?taskId=" + taskId);
+        response.sendRedirect("UWorkStation?taskId=" + taskId);
     }
 }
