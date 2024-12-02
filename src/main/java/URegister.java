@@ -37,7 +37,7 @@ public class URegister extends HttpServlet {
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		User user = new User(userID, name, email, password);
+		User user = new User(userID, email, name, password);
 		UserRegisterDao urDao = new UserRegisterDao();
 		String result = urDao.insert(user);
 		response.getWriter().print(result);
