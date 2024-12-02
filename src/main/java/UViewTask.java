@@ -15,30 +15,34 @@ public class UViewTask extends HttpServlet {
         super();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Retrieve user_id from session
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String userId = (String) session.getAttribute("username"); // Assuming 'username' corresponds to user_id
+        String userId = (String) session.getAttribute("username");
         
-        // If user is not logged in, redirect to login page
         if (userId == null || userId.isEmpty()) {
             response.sendRedirect("loginPage.jsp");
             return;
         }
 
-        // Call TaskDao to retrieve tasks for the given user_id
+        // Get sorting and filtering parameters
+        String sortBy = request.getParameter("sortBy");
+        String filterStatus = request.getParameter("filterStatus");
+        
+        // Call TaskDao with sorting and filtering parameters
         TaskDao taskDao = new TaskDao();
-        List<Task> tasks = taskDao.getTasksByUserId(userId);
+        List<Task> tasks = taskDao.getTasksByUserId(userId, sortBy, filterStatus);
         
-        // Set the tasks in the request scope to be accessible in the JSP
+        // Set the tasks and current filter/sort settings in request scope
         request.setAttribute("taskList", tasks);
+        request.setAttribute("currentSortBy", sortBy);
+        request.setAttribute("currentFilterStatus", filterStatus);
         
-        // Forward to the JSP page that will display the tasks
         request.getRequestDispatcher("myTask.jsp").forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Handle POST requests if needed, otherwise redirect to doGet
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         doGet(request, response);
     }
 }
