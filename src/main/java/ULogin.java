@@ -22,6 +22,7 @@ public class ULogin extends HttpServlet {
 
         UserRegisterDao urDao = new UserRegisterDao();
         boolean isValidUser = urDao.validateUser(username, password);
+        User user = urDao.getUser(username, password);
         System.out.println("isValidUser: " + isValidUser);
         System.out.println("username: " + username);
         System.out.println("password: " + password);
@@ -33,6 +34,7 @@ public class ULogin extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("username", username);
             response.sendRedirect("homePage.jsp");
+            session.setAttribute("user", user);
             
         } else {
             response.sendRedirect("loginPage.jsp?error=1");
