@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDao {
-  private String dburl="jdbc:mysql://localhost:3306/studysmart";
-	private String dbuname="root";
-	private String dbpassword="$Iamroot$"; //Remember to put your own password
-	private String dbdriver="com.mysql.jdbc.Driver";
+	private String dburl= dbConnectorInfo.dburl();
+	private String dbuname= dbConnectorInfo.dbuname();
+	private String dbpassword= dbConnectorInfo.dbpassword(); //Remember to put your own password
+	private String dbdriver= dbConnectorInfo.dbdriver();
   public void loadDriver(String dbdriver){
 		try{
 			Class.forName(dbdriver);
@@ -109,16 +109,15 @@ public class TaskDao {
 			return taskList;
 	}
 
-	// Method to retrieve a specific task by task_id
 	public Task getTaskById(int taskId, String userId) {
-		// Implement get task by ID with user verification
 		loadDriver(dbdriver);
 		Connection con = getConnection();
 
-		String sql = "SELECT t.task_id, t.task_name, t.description, t.due_date, t.priority, t.status, t.type " +
-									"FROM task t " +
-									"JOIN performs p ON t.task_id = p.task_id " +
-									"WHERE p.user_id = ? AND t.task_id = ?";
+		String sql = "SELECT t.task_id, t.task_name, t.description, t.due_date, " +
+								"t.priority, t.status, t.type, t.quick_note, t.progress " +
+								"FROM task t " +
+								"JOIN performs p ON t.task_id = p.task_id " +
+								"WHERE p.user_id = ? AND t.task_id = ?";
 		try {
 				PreparedStatement ps = con.prepareStatement(sql);
 				ps.setString(1, userId);
@@ -134,42 +133,24 @@ public class TaskDao {
 						task.setPriority(rs.getString("priority"));
 						task.setStatus(rs.getString("status"));
 						task.setType(rs.getString("type"));
+						task.setQuickNote(rs.getString("quick_note"));
+						task.setProgress(rs.getInt("progress"));
+						
+						// Get resources for this task
+						task.setResources(getResourcesForTask(taskId, con));
 
 						return task;
 				}
 		} catch (SQLException e) {
 				e.printStackTrace();
+		} finally {
+				try {
+						if (con != null) con.close();
+				} catch (SQLException e) {
+						e.printStackTrace();
+				}
 		}
 		return null;
-	}
-
-	// Method to update a task by task_id
-	public boolean updateTask(Task task, String userId) {
-		// Implement update task with user verification
-		loadDriver(dbdriver);
-		Connection con = getConnection();
-
-		String sql = "UPDATE task t " +
-									"JOIN performs p ON t.task_id = p.task_id " +
-									"SET t.task_name = ?, t.description = ?, t.due_date = ?, t.priority = ?, t.status = ?, t.type = ? " +
-									"WHERE p.user_id = ? AND t.task_id = ?";
-		try {
-				PreparedStatement ps = con.prepareStatement(sql);
-				ps.setString(1, task.getTaskName());
-				ps.setString(2, task.getDescription());
-				ps.setDate(3, java.sql.Date.valueOf(task.getDueDate()));
-				ps.setString(4, task.getPriority());
-				ps.setString(5, task.getStatus());
-				ps.setString(6, task.getType());
-				ps.setString(7, userId);
-				ps.setInt(8, task.getTaskId());
-
-				int rowsUpdated = ps.executeUpdate();
-				return rowsUpdated > 0;
-		} catch (SQLException e) {
-				e.printStackTrace();
-		}
-		return false;
 	}
 
 	// Method to delete a task by task_id
@@ -208,6 +189,310 @@ public class TaskDao {
         }
     }
     return false;
+	}
+
+	// Add method to update notes
+	public boolean updateTaskNotes(int taskId, String userId, String notes) {
+		loadDriver(dbdriver);
+		Connection con = getConnection();
+
+		String sql = "UPDATE task t " +
+								"JOIN performs p ON t.task_id = p.task_id " +
+								"SET t.quick_note = ? " +
+								"WHERE p.user_id = ? AND t.task_id = ?";
+		try {
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setString(1, notes);
+				ps.setString(2, userId);
+				ps.setInt(3, taskId);
+
+				int rowsUpdated = ps.executeUpdate();
+				return rowsUpdated > 0;
+		} catch (SQLException e) {
+				e.printStackTrace();
+		}
+		return false;
+	}
+
+	// Add method to update progress
+	public boolean updateTaskProgress(int taskId, String userId, int progress) {
+		loadDriver(dbdriver);
+		Connection con = getConnection();
+
+		String sql = "UPDATE task t " +
+								"JOIN performs p ON t.task_id = p.task_id " +
+								"SET t.progress = ? " +
+								"WHERE p.user_id = ? AND t.task_id = ?";
+		try {
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setInt(1, progress);
+				ps.setString(2, userId);
+				ps.setInt(3, taskId);
+
+				int rowsUpdated = ps.executeUpdate();
+				return rowsUpdated > 0;
+		} catch (SQLException e) {
+				e.printStackTrace();
+		}
+		return false;
+	}
+
+	// Method to get all resources for a task
+	private List<Resource> getResourcesForTask(int taskId, Connection con) {
+		List<Resource> resources = new ArrayList<>();
+		String sql = "SELECT id, task_id, url, display_text FROM resource WHERE task_id = ?";
+	    try {
+	        PreparedStatement ps = con.prepareStatement(sql);
+	        ps.setInt(1, taskId);
+	        
+	        ResultSet rs = ps.executeQuery();
+	        while (rs.next()) {
+	            Resource resource = new Resource();
+	            resource.setId(rs.getInt("id"));
+	            resource.setTaskId(rs.getInt("task_id"));
+	            resource.setUrl(rs.getString("url"));
+	            resource.setDisplayText(rs.getString("display_text"));
+	            resources.add(resource);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (con != null) con.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return resources;
+	}
+
+	// Method to add a new resource
+	public boolean addResource(int taskId, String url, String displayText) {
+	    loadDriver(dbdriver);
+	    Connection con = getConnection();
+	    
+	    String sql = "INSERT INTO resource (task_id, url, display_text) VALUES (?, ?, ?)";
+	    try {
+	        PreparedStatement ps = con.prepareStatement(sql);
+	        ps.setInt(1, taskId);
+	        ps.setString(2, url);
+	        // If displayText is null or empty, use the URL instead
+	        ps.setString(3, (displayText != null && !displayText.trim().isEmpty()) ? displayText : url);
+	        
+	        int rowsAffected = ps.executeUpdate();
+	        return rowsAffected > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (con != null) con.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return false;
+	}
+
+	// Method to delete a resource
+	public boolean deleteResource(int resourceId, String userId) {
+			loadDriver(dbdriver);
+			Connection con = getConnection();
+			
+			// First verify the resource belongs to a task owned by this user
+			String sql = "DELETE r FROM resource r " +
+									"INNER JOIN task t ON r.task_id = t.task_id " +
+									"INNER JOIN performs p ON t.task_id = p.task_id " +
+									"WHERE r.id = ? AND p.user_id = ?";
+			try {
+					PreparedStatement ps = con.prepareStatement(sql);
+					ps.setInt(1, resourceId);
+					ps.setString(2, userId);
+					
+					int rowsAffected = ps.executeUpdate();
+					return rowsAffected > 0;
+			} catch (SQLException e) {
+					e.printStackTrace();
+			} finally {
+					try {
+							if (con != null) con.close();
+					} catch (SQLException e) {
+							e.printStackTrace();
+					}
+			}
+			return false;
+	}
+
+	// Method to update task progress and status
+	public boolean updateTaskProgressAndStatus(int taskId, String userId, int progress, String status) {
+		loadDriver(dbdriver);
+		Connection con = getConnection();
+
+		String sql = "UPDATE task t " +
+								"JOIN performs p ON t.task_id = p.task_id " +
+								"SET t.progress = ?, t.status = ? " +
+								"WHERE p.user_id = ? AND t.task_id = ?";
+		
+		try {
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setInt(1, progress);
+				ps.setString(2, status);
+				ps.setString(3, userId);
+				ps.setInt(4, taskId);
+
+				int rowsUpdated = ps.executeUpdate();
+				return rowsUpdated > 0;
+		} catch (SQLException e) {
+				e.printStackTrace();
+		} finally {
+				try {
+						if (con != null) con.close();
+				} catch (SQLException e) {
+						e.printStackTrace();
+				}
+		}
+		return false;
+	}
+
+	// Add method to update task description
+	public boolean updateTaskDescription(int taskId, String userId, String description) {
+		loadDriver(dbdriver);
+		Connection con = getConnection();
+
+		String sql = "UPDATE task t " +
+								"JOIN performs p ON t.task_id = p.task_id " +
+								"SET t.description = ? " +
+								"WHERE p.user_id = ? AND t.task_id = ?";
+		
+		try {
+				PreparedStatement ps = con.prepareStatement(sql);
+				ps.setString(1, description);
+				ps.setString(2, userId);
+				ps.setInt(3, taskId);
+
+				int rowsUpdated = ps.executeUpdate();
+				return rowsUpdated > 0;
+		} catch (SQLException e) {
+				e.printStackTrace();
+		} finally {
+				try {
+						if (con != null) con.close();
+				} catch (SQLException e) {
+						e.printStackTrace();
+				}
+		}
+		return false;
+	}
+
+	// Add method to auto-update overdue tasks
+	public void updateOverdueTasks() {
+			loadDriver(dbdriver);
+			Connection con = getConnection();
+
+			String sql = "UPDATE task " +
+									"SET status = 'Overdue' " +
+									"WHERE due_date < CURRENT_DATE " +
+									"AND status != 'Completed'";
+			
+			try {
+					PreparedStatement ps = con.prepareStatement(sql);
+					ps.executeUpdate();
+			} catch (SQLException e) {
+					e.printStackTrace();
+			} finally {
+					try {
+							if (con != null) con.close();
+					} catch (SQLException e) {
+							e.printStackTrace();
+					}
+			}
+	}
+
+	// Add method to link a task to a course
+	public boolean linkTaskToCourse(int taskId, int courseId) {
+    loadDriver(dbdriver);
+    Connection con = getConnection();
+    
+    String sql = "INSERT INTO tasktodo (task_id, course_id) VALUES (?, ?) " +
+                 "ON DUPLICATE KEY UPDATE course_id = ?";
+    
+    try {
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, taskId);
+        ps.setInt(2, courseId);
+        ps.setInt(3, courseId);
+        
+        int rowsAffected = ps.executeUpdate();
+        return rowsAffected > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    return false;
+	}
+
+	// Add method to unlink a task from a course
+	public boolean unlinkTaskFromCourse(int taskId) {
+			loadDriver(dbdriver);
+			Connection con = getConnection();
+			
+			String sql = "DELETE FROM tasktodo WHERE task_id = ?";
+			
+			try {
+					PreparedStatement ps = con.prepareStatement(sql);
+					ps.setInt(1, taskId);
+					
+					int rowsAffected = ps.executeUpdate();
+					return rowsAffected > 0;
+			} catch (SQLException e) {
+					e.printStackTrace();
+			} finally {
+					try {
+							if (con != null) con.close();
+					} catch (SQLException e) {
+							e.printStackTrace();
+					}
+			}
+			return false;
+	}
+
+	// Add method to get linked course
+	public Course getLinkedCourse(int taskId) {
+			loadDriver(dbdriver);
+			Connection con = getConnection();
+			
+			String sql = "SELECT c.* FROM course c " +
+									"JOIN tasktodo tt ON c.course_id = tt.course_id " +
+									"WHERE tt.task_id = ?";
+			
+			try {
+					PreparedStatement ps = con.prepareStatement(sql);
+					ps.setInt(1, taskId);
+					
+					ResultSet rs = ps.executeQuery();
+					if (rs.next()) {
+							Course course = new Course();
+							course.setCourseId(rs.getInt("course_id"));
+							course.setCourseName(rs.getString("name"));
+							course.setInstructor(rs.getString("instructor"));
+							course.setStart_date(rs.getDate("start_date").toLocalDate());
+							course.setEnd_date(rs.getDate("end_date").toLocalDate());
+							return course;
+					}
+			} catch (SQLException e) {
+					e.printStackTrace();
+			} finally {
+					try {
+							if (con != null) con.close();
+					} catch (SQLException e) {
+							e.printStackTrace();
+					}
+			}
+			return null;
 	}
 
 }

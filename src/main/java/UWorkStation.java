@@ -1,5 +1,6 @@
 import java.io.IOException;
-import java.time.LocalDate;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,7 +39,23 @@ public class UWorkStation extends HttpServlet {
             Task task = taskDao.getTaskById(taskId, userId);
 
             if (task != null) {
+                // Get all courses for the user
+                CourseDao courseDao = new CourseDao();
+                List<Course> allCourses = courseDao.getCourseByUserId(userId);
+                
+                // Get the linked course for this task
+                Course linkedCourse = taskDao.getLinkedCourse(taskId);
+                
+                // Remove the linked course from available courses if it exists
+                if (linkedCourse != null) {
+                    allCourses.removeIf(course -> course.getCourseId() == linkedCourse.getCourseId());
+                }
+
+                // Set attributes for JSP
                 request.setAttribute("task", task);
+                request.setAttribute("linkedCourse", linkedCourse);
+                request.setAttribute("availableCourses", allCourses);
+                
                 request.getRequestDispatcher("taskWorkstation.jsp").forward(request, response);
             } else {
                 response.sendRedirect("myTask.jsp");
