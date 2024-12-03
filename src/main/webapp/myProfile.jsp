@@ -40,6 +40,13 @@
                 </c:choose>
             </div>
         </c:if>
+        <!-- Back Button -->
+        <a href="homePage.jsp" class="flex items-center text-blue-500 font-bold mb-6">
+            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
+        </a>
 
         <div class="bg-white shadow rounded-lg p-6">
             <h1 class="text-2xl font-bold text-blue-600 mb-6">User Profile</h1>
