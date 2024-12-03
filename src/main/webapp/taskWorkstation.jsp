@@ -41,25 +41,38 @@
 
                         <!-- Right side: Timer and Music controls -->
                         <div class="flex items-center space-x-2">
-                            <button onclick="toggleTimer()" 
-                                    class="inline-flex items-center justify-center px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" 
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <polyline points="12 6 12 12 16 14"/>
-                                </svg>
-                                Start Timer
-                            </button>
-                            <button onclick="toggleMusic()" 
-                                    class="inline-flex items-center justify-center px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" 
-                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M9 18V5l12-2v13"/>
-                                    <circle cx="6" cy="18" r="3"/>
-                                    <circle cx="18" cy="16" r="3"/>
-                                </svg>
-                                Play Music
-                            </button>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="toggleTimer()" 
+                                        class="inline-flex items-center justify-center px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm"
+                                        id="timerButton">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" 
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <polyline points="12 6 12 12 16 14"/>
+                                    </svg>
+                                    Start Timer
+                                </button>
+                                <span id="timerDisplay" class="font-mono text-sm text-gray-600 hidden"></span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button id="musicButton" onclick="toggleMusic()" 
+                                        class="inline-flex items-center justify-center px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" 
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 18V5l12-2v13"/>
+                                        <circle cx="6" cy="18" r="3"/>
+                                        <circle cx="18" cy="16" r="3"/>
+                                    </svg>
+                                    Play Music
+                                </button>
+                                <input type="range" 
+                                       min="0" 
+                                       max="100" 
+                                       value="50" 
+                                       class="w-20"
+                                       oninput="adjustVolume(this.value)"
+                                       title="Volume">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -280,64 +293,9 @@
         </div>
     </div>
 
+    <script src="${pageContext.request.contextPath}/timer.js"></script>
+    <script src="${pageContext.request.contextPath}/music.js"></script>
     <script>
-        let isTimerRunning = false;
-        let isMusicPlaying = false;
-
-        function toggleTimer() {
-            isTimerRunning = !isTimerRunning;
-            const button = event.target.closest('button');
-            if (isTimerRunning) {
-                button.classList.replace('bg-blue-500', 'bg-red-500');
-                button.classList.replace('hover:bg-blue-600', 'hover:bg-red-600');
-                button.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" 
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                    Stop Timer`;
-            } else {
-                button.classList.replace('bg-red-500', 'bg-blue-500');
-                button.classList.replace('hover:bg-red-600', 'hover:bg-blue-600');
-                button.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" 
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                    Start Timer`;
-            }
-        }
-
-        function toggleMusic() {
-            isMusicPlaying = !isMusicPlaying;
-            const button = event.target.closest('button');
-            if (isMusicPlaying) {
-                button.classList.replace('bg-blue-500', 'bg-red-500');
-                button.classList.replace('hover:bg-blue-600', 'hover:bg-red-600');
-                button.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" 
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 18V5l12-2v13"/>
-                        <circle cx="6" cy="18" r="3"/>
-                        <circle cx="18" cy="16" r="3"/>
-                    </svg>
-                    Stop Music`;
-            } else {
-                button.classList.replace('bg-red-500', 'bg-blue-500');
-                button.classList.replace('hover:bg-red-600', 'hover:bg-blue-600');
-                button.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" 
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 18V5l12-2v13"/>
-                        <circle cx="6" cy="18" r="3"/>
-                        <circle cx="18" cy="16" r="3"/>
-                    </svg>
-                    Play Music`;
-            }
-        }
-
         function confirmUnlink(form) {
             if (confirm('Are you sure you want to unlink this course from the task?')) {
                 form.submit();
