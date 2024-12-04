@@ -27,9 +27,11 @@ public class RecordStudySessionServlet extends HttpServlet {
             // Parse request parameters
             String startTimeStr = request.getParameter("startTime");
             String endTimeStr = request.getParameter("endTime");
+            String dateRecordedStr = request.getParameter("dateRecorded"); // Add this line
+            
             LocalTime startTime = LocalTime.parse(startTimeStr);
             LocalTime endTime = LocalTime.parse(endTimeStr);
-            LocalDate dateRecorded = LocalDate.now();
+            LocalDate dateRecorded = LocalDate.parse(dateRecordedStr); // Parse the date from client
             
             // Create and save study session
             StudySession studySession = new StudySession(startTime, endTime, dateRecorded);

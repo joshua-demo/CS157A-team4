@@ -40,27 +40,28 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function stopAndRecordSession() {
-      // Clear interval and get end time
-      clearInterval(timerInterval);
-      const endTime = new Date();
-      
-      // Format times for backend
-      const startTimeStr = timerStartTime.toTimeString().split(' ')[0];
-      const endTimeStr = endTime.toTimeString().split(' ')[0];
-      const taskId = document.querySelector('input[name="taskId"]').value;
-      
-      // Send study session data to backend
-      fetch('RecordStudySession', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: `startTime=${encodeURIComponent(startTimeStr)}&endTime=${encodeURIComponent(endTimeStr)}&taskId=${encodeURIComponent(taskId)}`
-      })
-      .catch(error => {
-          console.error('Error:', error);
-          showNotification('Error recording study session', true);
-      });
+    // Clear interval and get end time
+    clearInterval(timerInterval);
+    const endTime = new Date();
+    
+    // Format times for backend
+    const startTimeStr = timerStartTime.toTimeString().split(' ')[0];
+    const endTimeStr = endTime.toTimeString().split(' ')[0];
+    const dateRecordedStr = endTime.toISOString().split('T')[0]; // Get the date in YYYY-MM-DD format
+    const taskId = document.querySelector('input[name="taskId"]').value;
+    
+    // Send study session data to backend
+    fetch('RecordStudySession', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `startTime=${encodeURIComponent(startTimeStr)}&endTime=${encodeURIComponent(endTimeStr)}&dateRecorded=${encodeURIComponent(dateRecordedStr)}&taskId=${encodeURIComponent(taskId)}`
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error recording study session', true);
+    });
   }
 
   function updateButtonToStop(button) {
