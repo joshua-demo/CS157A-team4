@@ -363,15 +363,21 @@ public class TaskDao {
 
 		String sql = "UPDATE task t " +
 								"JOIN performs p ON t.task_id = p.task_id " +
-								"SET t.progress = ?, t.status = ? " +
+								"SET t.progress = ?, " +
+								"    t.status = CASE " +
+								"        WHEN ? = 100 THEN 'Completed' " +
+								"        WHEN due_date < CURRENT_DATE AND ? < 100 THEN 'Overdue' " +
+								"        ELSE 'Pending' " +
+								"    END " +
 								"WHERE p.user_id = ? AND t.task_id = ?";
 		
 		try {
 				PreparedStatement ps = con.prepareStatement(sql);
 				ps.setInt(1, progress);
-				ps.setString(2, status);
-				ps.setString(3, userId);
-				ps.setInt(4, taskId);
+				ps.setInt(2, progress);
+				ps.setInt(3, progress);
+				ps.setString(4, userId);
+				ps.setInt(5, taskId);
 
 				int rowsUpdated = ps.executeUpdate();
 				return rowsUpdated > 0;
@@ -423,9 +429,13 @@ public class TaskDao {
 			Connection con = getConnection();
 
 			String sql = "UPDATE task " +
-									"SET status = 'Overdue' " +
-									"WHERE due_date < CURRENT_DATE " +
-									"AND status != 'Completed'";
+                    "SET status = CASE " +
+                    "    WHEN progress = 100 THEN 'Completed' " +
+                    "    WHEN due_date < CURRENT_DATE AND status != 'Completed' THEN 'Overdue' " +
+                    "    ELSE status " +
+                    "END " +
+                    "WHERE (due_date < CURRENT_DATE AND status != 'Completed') " +
+                    "   OR progress = 100";
 			
 			try {
 					PreparedStatement ps = con.prepareStatement(sql);
