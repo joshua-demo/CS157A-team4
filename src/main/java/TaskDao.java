@@ -75,38 +75,72 @@ public class TaskDao {
 	}
 
 	// Method to retrieve all tasks associated with a user_id
-	public List<Task> getTasksByUserId(String userId) {
-			loadDriver(dbdriver);
-			Connection con = getConnection();
-			List<Task> taskList = new ArrayList<>();
-			
-			String sql = "SELECT t.task_id, t.task_name, t.description, t.due_date, t.priority, t.status, t.type " +
-										"FROM task t " +
-										"JOIN performs p ON t.task_id = p.task_id " +
-										"WHERE p.user_id = ?";
-			
-			try {
-					PreparedStatement ps = con.prepareStatement(sql);
-					ps.setString(1, userId);
-					ResultSet rs = ps.executeQuery();
-					
-					while (rs.next()) {
-							Task task = new Task();
-							task.setTaskId(rs.getInt("task_id"));
-							task.setTaskName(rs.getString("task_name"));
-							task.setDescription(rs.getString("description"));
-							task.setDueDate(rs.getDate("due_date").toLocalDate());
-							task.setPriority(rs.getString("priority"));
-							task.setStatus(rs.getString("status"));
-							task.setType(rs.getString("type"));
-							
-							taskList.add(task);
-					}
-			} catch (SQLException e) {
-					e.printStackTrace();
-			}
-			
-			return taskList;
+	public List<Task> getTasksByUserId(String userId, String sortBy, String filterStatus) {
+    loadDriver(dbdriver);
+    Connection con = getConnection();
+    List<Task> taskList = new ArrayList<>();
+    
+    StringBuilder sql = new StringBuilder(
+        "SELECT t.task_id, t.task_name, t.description, t.due_date, t.priority, t.status, t.type " +
+        "FROM task t " +
+        "JOIN performs p ON t.task_id = p.task_id " +
+        "WHERE p.user_id = ?");
+    
+    // Add status filter if specified
+    if (filterStatus != null && !filterStatus.equals("all")) {
+        sql.append(" AND t.status = ?");
+    }
+    
+    // Add sorting
+    if (sortBy != null) {
+        switch (sortBy) {
+            case "dueDate":
+                sql.append(" ORDER BY t.due_date ASC");
+                break;
+            case "priority":
+                // Custom ordering for priority
+                sql.append(" ORDER BY CASE t.priority " +
+                          "WHEN 'High' THEN 1 " +
+                          "WHEN 'Medium' THEN 2 " +
+                          "WHEN 'Low' THEN 3 END");
+                break;
+        }
+    }
+    
+    try {
+        PreparedStatement ps = con.prepareStatement(sql.toString());
+        ps.setString(1, userId);
+        
+        // Set filter parameter if status filter is active
+        if (filterStatus != null && !filterStatus.equals("all")) {
+            ps.setString(2, filterStatus);
+        }
+        
+        ResultSet rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            Task task = new Task();
+            task.setTaskId(rs.getInt("task_id"));
+            task.setTaskName(rs.getString("task_name"));
+            task.setDescription(rs.getString("description"));
+            task.setDueDate(rs.getDate("due_date").toLocalDate());
+            task.setPriority(rs.getString("priority"));
+            task.setStatus(rs.getString("status"));
+            task.setType(rs.getString("type"));
+            
+            taskList.add(task);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    return taskList;
 	}
 
 	public Task getTaskById(int taskId, String userId) {
@@ -329,15 +363,21 @@ public class TaskDao {
 
 		String sql = "UPDATE task t " +
 								"JOIN performs p ON t.task_id = p.task_id " +
-								"SET t.progress = ?, t.status = ? " +
+								"SET t.progress = ?, " +
+								"    t.status = CASE " +
+								"        WHEN ? = 100 THEN 'Completed' " +
+								"        WHEN due_date < CURRENT_DATE AND ? < 100 THEN 'Overdue' " +
+								"        ELSE 'Pending' " +
+								"    END " +
 								"WHERE p.user_id = ? AND t.task_id = ?";
 		
 		try {
 				PreparedStatement ps = con.prepareStatement(sql);
 				ps.setInt(1, progress);
-				ps.setString(2, status);
-				ps.setString(3, userId);
-				ps.setInt(4, taskId);
+				ps.setInt(2, progress);
+				ps.setInt(3, progress);
+				ps.setString(4, userId);
+				ps.setInt(5, taskId);
 
 				int rowsUpdated = ps.executeUpdate();
 				return rowsUpdated > 0;
@@ -389,9 +429,13 @@ public class TaskDao {
 			Connection con = getConnection();
 
 			String sql = "UPDATE task " +
-									"SET status = 'Overdue' " +
-									"WHERE due_date < CURRENT_DATE " +
-									"AND status != 'Completed'";
+                    "SET status = CASE " +
+                    "    WHEN progress = 100 THEN 'Completed' " +
+                    "    WHEN due_date < CURRENT_DATE AND status != 'Completed' THEN 'Overdue' " +
+                    "    ELSE status " +
+                    "END " +
+                    "WHERE (due_date < CURRENT_DATE AND status != 'Completed') " +
+                    "   OR progress = 100";
 			
 			try {
 					PreparedStatement ps = con.prepareStatement(sql);

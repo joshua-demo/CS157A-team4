@@ -37,6 +37,29 @@
             Add New Task
         </button>
 
+        <!-- New Sorting and Filtering Controls -->
+        <div class="flex flex-wrap gap-4 mb-6">
+            <div class="flex items-center space-x-2">
+                <label class="text-gray-700 font-semibold">Sort by:</label>
+                <select id="sortBy" onchange="refreshWithFilters()" 
+                        class="border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="" ${currentSortBy == null ? 'selected' : ''}>None</option>
+                    <option value="dueDate" ${currentSortBy == 'dueDate' ? 'selected' : ''}>Due Date</option>
+                    <option value="priority" ${currentSortBy == 'priority' ? 'selected' : ''}>Priority</option>
+                </select>
+            </div>
+            <div class="flex items-center space-x-2">
+                <label class="text-gray-700 font-semibold">Filter Status:</label>
+                <select id="filterStatus" onchange="refreshWithFilters()" 
+                        class="border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="all" ${currentFilterStatus == null || currentFilterStatus == 'all' ? 'selected' : ''}>All</option>
+                    <option value="Pending" ${currentFilterStatus == 'Pending' ? 'selected' : ''}>Pending</option>
+                    <option value="Completed" ${currentFilterStatus == 'Completed' ? 'selected' : ''}>Completed</option>
+                    <option value="Overdue" ${currentFilterStatus == 'Overdue' ? 'selected' : ''}>Overdue</option>
+                </select>
+            </div>
+        </div>
+
         <!-- Modal -->
         <div class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center p-4">
             <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
@@ -134,27 +157,23 @@
                             <th class="py-3 px-6 text-left">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="text-gray-600 text-sm font-light">
+                    <tbody id="taskTableBody" class="text-gray-600 text-sm font-light">
                         <c:forEach var="task" items="${taskList}">
-                            <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer" onclick="navigateToWorkstation('${task.taskId}')">
+                            <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer task-row" 
+                                onclick="navigateToWorkstation('${task.taskId}')"
+                                data-due-date="${task.dueDate}"
+                                data-priority="${task.priority}"
+                                data-status="${task.status}">
                                 <td class="py-3 px-6 text-left whitespace-nowrap">${task.taskName}</td>
                                 <td class="py-3 px-6 text-left whitespace-nowrap">${task.description}</td>
                                 <td class="py-3 px-6 text-left">${task.dueDate}</td>
                                 <td class="py-3 px-6 text-left">
-                                    <span class="
-                                        px-2 py-1 rounded-full text-xs
-                                        ${task.priority eq 'High' ? 'bg-red-200 text-red-800' : 
-                                        task.priority eq 'Medium' ? 'bg-yellow-200 text-yellow-800' : 
-                                        'bg-green-200 text-green-800'}">
+                                    <span class="px-2 py-1 rounded-full text-xs ${task.priority eq 'High' ? 'bg-red-200 text-red-800' : task.priority eq 'Medium' ? 'bg-yellow-200 text-yellow-800' : 'bg-green-200 text-green-800'}">
                                         ${task.priority}
                                     </span>
                                 </td>
                                 <td class="py-3 px-6 text-left">
-                                    <span class="
-                                        px-2 py-1 rounded-full text-xs
-                                        ${task.status eq 'Completed' ? 'bg-green-200 text-green-800' : 
-                                        task.status eq 'Overdue' ? 'bg-red-200 text-red-800' : 
-                                        'bg-yellow-200 text-yellow-800'}">
+                                    <span class="px-2 py-1 rounded-full text-xs ${task.status eq 'Completed' ? 'bg-green-200 text-green-800' : task.status eq 'Overdue' ? 'bg-red-200 text-red-800' : 'bg-yellow-200 text-yellow-800'}">
                                         ${task.status}
                                     </span>
                                 </td>
@@ -253,6 +272,27 @@
         function navigateToWorkstation(taskId) {
             window.location.href = 'UWorkStation?taskId=${taskId}' + taskId;
         }
+
+        function refreshWithFilters() {
+            const sortBy = document.getElementById('sortBy').value;
+            const filterStatus = document.getElementById('filterStatus').value;
+
+            
+            // Construct URL with parameters
+            let url = 'UViewTask?';
+            if (sortBy !== 'none') {
+                url += 'sortBy=' + sortBy + '&';
+            }
+            if (filterStatus !== 'all') {
+                url += 'filterStatus=' + filterStatus + '&';
+            }
+            
+            // Remove trailing '&' or '?' if present
+            url = url.replace(/[&?]$/, '');
+            
+            window.location.href = url;
+        }
+        
     </script>
 </body>
 </html>

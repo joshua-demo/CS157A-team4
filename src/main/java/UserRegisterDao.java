@@ -80,4 +80,34 @@ public class UserRegisterDao {
         }
         return isValid;
     }
+		public User getUser(String username, String password) {
+			loadDriver(dbdriver);
+			Connection con = getConnection();
+			User user = null;
+			String query = "SELECT * FROM user WHERE user_id = ? AND password = ?";
+			try (PreparedStatement stmt = con.prepareStatement(query)) {
+					stmt.setString(1, username);
+					stmt.setString(2, password);
+	
+					ResultSet rs = stmt.executeQuery();
+					if (rs.next()) {
+							// Create User object matching database column order
+							user = new User(
+									rs.getString("user_id"),  // This is the username/user_id
+									rs.getString("email"),
+									rs.getString("name"),
+									rs.getString("password")
+							);
+					}
+			} catch (SQLException e) {
+					e.printStackTrace();
+			} finally {
+					try {
+							if (con != null) con.close();
+					} catch (SQLException e) {
+							e.printStackTrace();
+					}
+			}
+			return user;
+	}
 }

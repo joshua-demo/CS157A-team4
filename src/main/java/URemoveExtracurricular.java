@@ -1,3 +1,5 @@
+
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -7,16 +9,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class URegister
+ * Servlet implementation class URemoveExtracurricular
  */
-@WebServlet("/URegister")
-public class URegister extends HttpServlet {
+@WebServlet("/URemoveExtracurricular")
+public class URemoveExtracurricular extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public URegister() {
+    public URemoveExtracurricular() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -33,26 +35,24 @@ public class URegister extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String userID = request.getParameter("userID"); 
-		String name = request.getParameter("name");
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
-		User user = new User(userID, email, name, password);
-		UserRegisterDao urDao = new UserRegisterDao();
-		String result = urDao.insert(user);
-		response.getWriter().print(result);
+		String extracurricularId = request.getParameter("extracurricularId");
 		
-		boolean isValidUser = urDao.validateUser(name, password);
+		HttpSession session = request.getSession();
+        String userId = (String) session.getAttribute("username");
 		
-		if (isValidUser) {
-            // This code sends you to home page if login is a success            
-            HttpSession session = request.getSession();
-            session.setAttribute("username", name);
-            response.sendRedirect("homePage.jsp");
-            
-        } else {
-            response.sendRedirect("loginPage.jsp?error=1");
-        }
+        //for debugging
+        System.out.println("Deleting from extracurricular with extracurricular_id: " + extracurricularId);
+        System.out.println("Deleting from involvedin with extracurricular_id: " + extracurricularId + " and user_id: " + userId);
+        
+		try {
+			ExtracurricularDao ecDao = new ExtracurricularDao();
+			ecDao.deleteExtracurricularById(Integer.parseInt(extracurricularId), userId);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		response.sendRedirect("myExtracurriculars.jsp");
 	}
 
 }
