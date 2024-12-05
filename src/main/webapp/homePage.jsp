@@ -7,29 +7,12 @@
     <title>StudySmart - Home</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <style>
-        .min-h-screen {
-            min-height: 100vh;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 </head>
 <body class="bg-gray-100 font-sans flex flex-col min-h-screen">
-    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="text-4xl font-bold" id="study-smart">
-                <i class="fas fa-graduation-cap mr-2"></i>StudySmart
-            </h1>
-            <nav>
-			    <form action="ULogout" method="post" class="inline-block">
-			        <button type="submit" 
-			                class="text-white-500 font-bold hover:underline focus:outline-none">
-			            Logout
-			        </button>
-			    </form>
-			</nav>
-        </div>
-    </header>
-
+    <jsp:include page="navbar.jsp" />
+    
     <main class="flex-grow max-w-6xl mx-auto mt-8 p-6">
         <h2 class="text-3xl font-semibold text-gray-800 mb-6">Welcome back, ${homePageData.name}!</h2>
         
