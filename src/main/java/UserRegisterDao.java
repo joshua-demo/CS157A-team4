@@ -26,11 +26,14 @@ public class UserRegisterDao {
 		}
 		return con;
 	}
-	public String insert(User user){
+	public int insert(User user){
 		loadDriver(dbdriver);
 		Connection con=getConnection();
-		String result="data entered successfully";
+		//String result="data entered successfully";
 		String sql="insert into user values(?,?,?,?,?)";
+		
+		int affectedRows = 0;
+		
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, user.getuser_id());  
@@ -38,10 +41,9 @@ public class UserRegisterDao {
 			ps.setString(3, user.getName());
 			ps.setString(4, user.getPassword());
 			ps.setString(5, user.getProfile_date_created());
-			ps.executeUpdate();
+			affectedRows = ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			result="data not entered";
 		} finally {
 	        try {
 	            if (con != null) {
@@ -51,7 +53,7 @@ public class UserRegisterDao {
 	            e.printStackTrace();
 	        }
 		}
-		return result;
+		return affectedRows;
 	}
 
 	// Validate user login

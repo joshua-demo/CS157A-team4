@@ -28,12 +28,24 @@
                 </svg>
                 <h2 class="mt-6 text-3xl font-extrabold text-gray-900">Sign in to StudySmart</h2>
             </div>
-            <% if (request.getParameter("error") != null) { %>
-                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                    <strong class="font-bold">Error!</strong>
-                    <span class="block sm:inline"> Invalid username or password.</span>
-                </div>
-            <% } %>
+            <% 
+			    if (request.getParameter("error") != null) { 
+			%>
+			    <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+			        <strong class="font-bold">Error!</strong>
+			        <span class="block sm:inline">Invalid username or password.</span>
+			    </div>
+			<% 
+			    } 
+			    else if (request.getParameter("registered") != null) { 
+			%>
+			    <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+			        <strong class="font-bold">Success!</strong>
+			        <span class="block sm:inline">You have successfully created an account.</span>
+			    </div>
+			<% 
+			    } 
+			%>
             <form class="space-y-6" action="ULogin" method="post">
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-700">
