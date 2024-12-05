@@ -37,13 +37,19 @@ public class URegister extends HttpServlet {
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		User user = new User(userID, email, name, password);
+		String profilePicture = request.getParameter("profilePicture");
+		User user = new User(userID, email, name, password, profilePicture);
 		UserRegisterDao urDao = new UserRegisterDao();
 		int result = urDao.insert(user);
 		
-		if (result == 1) {
+		boolean isValidUser = urDao.validateUser(userID, password);
+		
+		if (isValidUser) {
             // This code sends you to home page if login is a success            
-            response.sendRedirect("loginPage.jsp?registered=1");
+            HttpSession session = request.getSession();
+            session.setAttribute("username", userID);
+            session.setAttribute("user", user);
+            response.sendRedirect("homePage.jsp");
             
         } else {
             response.sendRedirect("loginPage.jsp?error=1");
