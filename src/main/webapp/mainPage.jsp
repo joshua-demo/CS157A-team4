@@ -45,13 +45,17 @@
                 <span class="ml-2 text-2xl font-bold text-gray-800">StudySmart</span>
             </div>
             <div class="hidden md:flex items-center space-x-6">
-                <a href="#features" class="text-gray-600 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md transition duration-300">Features</a>
-                <a href="#about" class="text-gray-600 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md transition duration-300">About</a>
-                <a href="#contact" class="text-gray-600 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md transition duration-300">Contact</a>
+                <a href="#features" class="text-gray-600 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md transition duration-300 smooth-scroll">Features</a>
+                <a href="#about" class="text-gray-600 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md transition duration-300 smooth-scroll">About</a>
+                <a href="#contact" class="text-gray-600 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md transition duration-300 smooth-scroll">Contact</a>
             </div>
             <div class="flex items-center space-x-4">
-                <a href="loginPage.jsp" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 transform hover:scale-105">Login</a>
-                <a href="userRegister.jsp" class="px-4 py-2 bg-white text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 transition duration-300 transform hover:scale-105">Register</a>
+                <% if (session.getAttribute("user") != null) { %>
+                    <a href="homePage.jsp" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 transform hover:scale-105">My StudySmart</a>
+                <% } else { %>
+                    <a href="loginPage.jsp" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 transform hover:scale-105">Login</a>
+                    <a href="userRegister.jsp" class="px-4 py-2 bg-white text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 transition duration-300 transform hover:scale-105">Register</a>
+                <% } %>
             </div>
         </nav>
     </header>
@@ -132,6 +136,21 @@
                     delay += 100;
                 });
             }, 300);
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a.smooth-scroll').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
         });
     </script>
 </body>
