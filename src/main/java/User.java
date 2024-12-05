@@ -8,12 +8,14 @@ public class User {
     private String email;
     private String password;
     private String profile_date_created;
+    private String profilePicture;
     
-    public User(String user_id, String email, String name, String password) {
+    public User(String user_id, String email, String name, String password, String profilePicture) {
         this.user_id = user_id; //username rather than number ID?
     	this.name = name;
         this.email = email;
         this.password = password;
+        this.profilePicture = profilePicture;
         generateCreationDate();
     }
 
@@ -29,7 +31,9 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-
+    
+    public String getProfilePicture() { return profilePicture; }
+    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
 	public String getProfile_date_created() { return profile_date_created; }
 	//MM/dd/yyyy format for setting date [ex: 2024-10-13]
 	public void setProfile_date_created(String profile_date_created) { this.profile_date_created = profile_date_created; }
