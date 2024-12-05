@@ -12,16 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class UAddCourse
+ * Servlet implementation class UAddExtracurriculars
  */
-@WebServlet("/UAddCourse")
-public class UAddCourse extends HttpServlet {
+@WebServlet("/UAddExtracurriculars")
+public class UAddExtracurriculars extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public UAddCourse() {
+    public UAddExtracurriculars() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -38,9 +38,9 @@ public class UAddCourse extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// Retrieve course info from the form 
-        String courseName = request.getParameter("courseName");
-        String instructor = request.getParameter("instructor");
+		// Retrieve extracurricular info from the form 
+        String activityName = request.getParameter("activityName");
+        String description = request.getParameter("description");
         String start_date_str = request.getParameter("startDate");
         String end_date_str = request.getParameter("endDate");
 
@@ -48,31 +48,27 @@ public class UAddCourse extends HttpServlet {
         HttpSession session = request.getSession();
         String userId = (String) session.getAttribute("username");
 
-        // Initialize course object and set fields
-        Course course = new Course();
-        course.setCourseName(courseName);
-        course.setInstructor(instructor);
+        // Initialize extracurricular object and set fields
+        Extracurricular extracurricular = new Extracurricular();
+        extracurricular.setActivityName(activityName);
+        extracurricular.setDescription(description);
 
         // Parse the start and end date string into LocalDate and handle possible errors
         try {
             LocalDate startDate = LocalDate.parse(start_date_str);
             LocalDate endDate = LocalDate.parse(end_date_str);
-            course.setStart_date(startDate);
-            course.setEnd_date(endDate);
+            extracurricular.setStart_date(startDate);
+            extracurricular.setEnd_date(endDate);
         } catch (DateTimeParseException e) {
             response.getWriter().print("Invalid date format.");
             return;
         }
 
-        // Call CourseDao to insert the course into the database and associate it with user_id
-        CourseDao courseDao = new CourseDao();
-        String result = courseDao.insert(course, userId);
+        // Call ExtracurricularDao to insert the extracurricular into the database and associate it with user_id
+        ExtracurricularDao ecDao = new ExtracurricularDao();
+        String result = ecDao.insert(extracurricular, userId);
         
-        // Print result back to the user (success or failure message)
-        // response.getWriter().print(result);
-        
-        response.sendRedirect("myCourses.jsp");
-        
+        response.sendRedirect("myExtracurriculars.jsp");
 	}
 
 }

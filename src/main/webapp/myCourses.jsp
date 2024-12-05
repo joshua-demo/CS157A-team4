@@ -106,8 +106,11 @@
                         <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                             <th class="py-3 px-6 text-left">Course Name</th>
                             <th class="py-3 px-6 text-left">Instructor</th>
+                            <th class="py-3 px-6 text-left">Grade Percentage</th>
+                            <th class="py-3 px-6 text-left">Letter Grade</th>
                             <th class="py-3 px-6 text-left">Start Date</th>
                             <th class="py-3 px-6 text-left">End Date</th>
+                            <th class="py-3 px-6 text-left">Assignments</th>
                             <th class="py-3 px-3 text-left">Remove Course</th> 
                         </tr>
                     </thead>
@@ -116,8 +119,19 @@
                             <tr class="border-b border-gray-200 hover:bg-gray-100">
                                 <td class="py-3 px-6 text-left whitespace-nowrap">${course.courseName}</td>
                                 <td class="py-3 px-6 text-left">${course.instructor}</td>
+                                <td class="py-3 px-6 text-left">${course.decimalGrade}</td>
+                                <td class="py-3 px-6 text-left">${course.letterGrade}</td>
                                 <td class="py-3 px-6 text-left">${course.start_date}</td>
                                 <td class="py-3 px-6 text-left">${course.end_date}</td>
+                                <td class="py-3 px-6 text-left">
+					                <form action="UViewAssignment" method="get">
+					                    <input type="hidden" name="courseId" value="${course.courseId}" />
+					                    <input type="hidden" id="courseName" name="courseName" value="${course.courseName}">
+					                    <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-emerald-500">
+					                        Assignments
+					                    </button>
+					                </form>
+					            </td>
                                	<td class="py-3 px-6 text-left">
 					                <form action="URemoveCourse" method="post" onsubmit="return confirm('Are you sure you want to remove this course?') & setTimeout(refreshCourses, 1000);">
 					                    <input type="hidden" name="courseId" value="${course.courseId}" />

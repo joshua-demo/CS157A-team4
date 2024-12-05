@@ -37,6 +37,8 @@ public class CourseDao {
 			String result = "Course entered successfully";
 			String courseInsertSql = "INSERT INTO course (name, instructor, start_date, end_date) VALUES (?, ?, ?, ?)";
 			String enrolledInsertSql = "INSERT INTO enrolled (user_id, course_id) VALUES (?, ?)";
+			String insertGrade = "INSERT INTO grade (decimal_grade, letter_grade, date_recorded) VALUES (?, ?, ?)";
+			String insertGradeOf = "INSERT INTO gradeof (grade_id, course_id) VALUES (?, ?)";;
 			
 			try {
 				// Insert course and retrieve generated course_id
@@ -52,19 +54,45 @@ public class CourseDao {
 						throw new SQLException("Inserting course failed, no rows affected.");
 				}
 				
+				int courseId = 0;
+				
 				// Get the generated course_id
 				ResultSet generatedKeys = psCourse.getGeneratedKeys();
 				if (generatedKeys.next()) {
-						int courseId = generatedKeys.getInt(1);
+						courseId = generatedKeys.getInt(1);
 
 						// Insert into enrolled table (user_id and course_id)
 						PreparedStatement psEnrolled = con.prepareStatement(enrolledInsertSql);
 						psEnrolled.setString(1, userId); // Set user_id
 						psEnrolled.setInt(2, courseId);    // Set course_id
 						psEnrolled.executeUpdate();
+						
+						
 				} else {
 						throw new SQLException("Inserting course failed, no ID obtained.");
 				}
+				
+				//Insert into Grade table
+				PreparedStatement gradePs = con.prepareStatement(insertGrade, PreparedStatement.RETURN_GENERATED_KEYS);
+				gradePs.setDouble(1, 100);
+				gradePs.setString(2, "A");
+				gradePs.setDate(3, java.sql.Date.valueOf(course.getStart_date()));
+				
+				gradePs.executeUpdate();
+				ResultSet generatedGradeKey = gradePs.getGeneratedKeys();
+				if (generatedGradeKey.next()) {
+					
+					int gradeId = generatedGradeKey.getInt(1);
+					
+					//Insert into gradeOf table
+					PreparedStatement gradeOfPs = con.prepareStatement(insertGradeOf);
+					gradeOfPs.setInt(1, gradeId);
+					gradeOfPs.setInt(2, courseId);
+					gradeOfPs.executeUpdate();
+				} else {
+					throw new SQLException("Inserting grade failed, no ID obtained.");
+				}
+				
 			} catch (SQLException e) {
 					e.printStackTrace();
 					result = "course not entered";
@@ -89,13 +117,32 @@ public class CourseDao {
 		try {
 			String coursesSql = "DELETE FROM course WHERE course_id = ?";
 			String enrolledSql = "DELETE FROM enrolled WHERE course_id = ? AND user_id = ?";
+			String gradeSql = "DELETE FROM grade WHERE grade_id = ?";
+			String gradeOfSql = "DELETE FROM gradeof WHERE course_id = ?";
 			PreparedStatement ps = con.prepareStatement(coursesSql);
 			PreparedStatement ps1 = con.prepareStatement(enrolledSql);
+			PreparedStatement ps2 = con.prepareStatement(gradeSql);
+			PreparedStatement ps3 = con.prepareStatement(gradeOfSql);
+			
+			//Get grade_id before deleting anything
+			String gradeIdSql = "SELECT grade_id FROM gradeof WHERE course_id = ?";
+			PreparedStatement gradeInSqlPs = con.prepareStatement(gradeIdSql);
+			gradeInSqlPs.setInt(1, course_id);
+			int grade_id = -1;
+			ResultSet gradeIdRs = gradeInSqlPs.executeQuery(); 
+			if (gradeIdRs.next()) {
+				grade_id = gradeIdRs.getInt("grade_id");
+			}
+			
 			ps.setInt(1, course_id);
 			ps1.setInt(1, course_id);
 			ps1.setString(2, userId);
+			ps2.setInt(1, grade_id);
+			ps3.setInt(1, course_id);
 			
 			con.setAutoCommit(false); // Start transaction
+			ps3.executeUpdate();
+		    ps2.executeUpdate();
 		    ps1.executeUpdate(); // Delete from enrolled
 		    ps.executeUpdate(); // Delete from courses
 		    con.commit(); // Commit transaction
@@ -125,11 +172,21 @@ public class CourseDao {
 					
 					while (rs.next()) {
 							Course course = new Course();
+							
+							int course_id = rs.getInt("course_id");
+							
 							course.setCourseId(rs.getInt("course_id"));
 							course.setCourseName(rs.getString("name"));
 							course.setInstructor(rs.getString("instructor"));
 							course.setStart_date(rs.getDate("start_date").toLocalDate());
 							course.setEnd_date(rs.getDate("end_date").toLocalDate());
+							
+							AssignmentDao aDao = new AssignmentDao();
+							List<Assignment> assignmentList;
+							assignmentList = aDao.getAssignmentsByCourseId(course_id);
+							course.addAssignmentList(assignmentList);
+							
+							course.calculateGrade();
 							
 							courseList.add(course);
 					}
