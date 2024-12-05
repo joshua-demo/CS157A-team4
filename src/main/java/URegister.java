@@ -48,7 +48,7 @@ public class URegister extends HttpServlet {
 		if (isValidUser) {
             // This code sends you to home page if login is a success            
             HttpSession session = request.getSession();
-            session.setAttribute("username", name);
+            session.setAttribute("username", userID);
             session.setAttribute("user", user);
             response.sendRedirect("homePage.jsp");
             
