@@ -43,7 +43,7 @@ public class URegister extends HttpServlet {
 		String result = urDao.insert(user);
 		response.getWriter().print(result);
 		
-		boolean isValidUser = urDao.validateUser(name, password);
+		boolean isValidUser = urDao.validateUser(userID, password);
 		
 		if (isValidUser) {
             // This code sends you to home page if login is a success            
