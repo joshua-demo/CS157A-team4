@@ -70,7 +70,9 @@ public class UAddCourse extends HttpServlet {
         
         // Print result back to the user (success or failure message)
         // response.getWriter().print(result);
+        
         response.sendRedirect("myCourses.jsp");
+        
 	}
 
 }

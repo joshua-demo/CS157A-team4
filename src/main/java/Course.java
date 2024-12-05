@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Course {
 	private int courseId;		//corresponds to course_id (primary key, auto increments) 
@@ -6,6 +7,8 @@ public class Course {
 	private String instructor; 	//corresponds to instructor
 	private LocalDate start_date;
 	private LocalDate end_date;
+	private String grade;
+	private ArrayList<Assignment> assignmentsList;
 	
 	//Constructor
 	public Course(int courseId, String courseName, String instructor, LocalDate start_date, LocalDate end_date) {
@@ -15,10 +18,14 @@ public class Course {
 		this.instructor = instructor;
 		this.start_date = start_date;
 		this.end_date = end_date;
+		this.grade = "N/A";
+		assignmentsList = new ArrayList<>();
 	}
 
 	//default constructor
-	public Course() {}
+	public Course() {
+		assignmentsList = new ArrayList<>();
+	}
 
 	//getters and setters
 	public int getCourseId() {
@@ -68,6 +75,49 @@ public class Course {
 	}
 	
 	
+	//Add Assignment
+	public void addAssigmnent(Assignment assignment) {
+		assignmentsList.add(assignment);
+	}
 	
-   
+	//Derive Letter grade from number grade
+	public String determineLetterGrade(double grade) {
+		
+		if (grade < 0) {
+			return "N/A";
+		}
+		else if (grade < 60) {
+			return "F";
+		}
+		else if (grade < 70) {
+			return "D";
+		}
+		else if (grade < 80) {
+			return "C";
+		}
+		else if (grade < 90) {
+			return "B";
+		}
+		else if (grade < 101) {
+			return "A";
+		}
+		
+		return "N/A";
+	}
+	
+	//Calculate Grade using all assignments in course
+    public void calculateGrade() {
+    	if (assignmentsList.size() == 0) {
+    		grade = "N/A";
+    		return;
+    	}
+    	
+    	double sum = 0;
+    	
+    	for (Assignment a : assignmentsList) {
+    		sum += a.getGrade() * a.getWeight();
+    	}
+    	
+    	this.grade = determineLetterGrade(sum);
+    }
 }
