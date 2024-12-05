@@ -16,8 +16,6 @@ local.properties
 # Locally stored "Eclipse launch configurations"
 *.launch
 
-.project
-
 # Java annotation processor (APT)
 .factorypath
 
@@ -48,3 +46,4 @@ local.properties
 # Typically, this file would be tracked if it contains build/dependency configurations:
 #.project
 /build/
+google-services/node_modules/
