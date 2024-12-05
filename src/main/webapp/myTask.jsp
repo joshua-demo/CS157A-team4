@@ -122,8 +122,9 @@
                             <label for="type" class="block text-gray-700 text-sm font-bold mb-2">Type:</label>
                             <select id="type" name="type" required 
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                                <option value="Group Project">Group Project</option>
-                                <option value="Assignment">Assignment</option>
+                                <option value="Group Task">Group Task</option>
+                                <option value="Personal Task">Personal Task</option>
+                                <option value="Exam">Exam</option>
                             </select>
                         </div>
 
@@ -149,7 +150,7 @@
                     <thead>
                         <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                             <th class="py-3 px-6 text-left">Task Name</th>
-                            <th class="py-3 px-6 text-left">Description</th>
+                            <!-- <th class="py-3 px-6 text-left">Description</th> -->
                             <th class="py-3 px-6 text-left">Due Date</th>
                             <th class="py-3 px-6 text-left">Priority</th>
                             <th class="py-3 px-6 text-left">Status</th>
@@ -159,28 +160,64 @@
                     </thead>
                     <tbody id="taskTableBody" class="text-gray-600 text-sm font-light">
                         <c:forEach var="task" items="${taskList}">
-                            <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer task-row" 
+                            <tr class="border-b border-gray-200 transition-colors duration-200 ease-in-out cursor-pointer
+                                        ${task.type eq 'Group Task' ? 'bg-blue-50/50 hover:bg-blue-100/50' : 
+                                        task.type eq 'Personal Task' ? 'bg-red-50/50 hover:bg-red-100/50' : 
+                                        'bg-purple-50/50 hover:bg-purple-100/50'}"
                                 onclick="navigateToWorkstation('${task.taskId}')"
                                 data-due-date="${task.dueDate}"
                                 data-priority="${task.priority}"
                                 data-status="${task.status}">
-                                <td class="py-3 px-6 text-left whitespace-nowrap">${task.taskName}</td>
-                                <td class="py-3 px-6 text-left whitespace-nowrap">${task.description}</td>
+                                <td class="py-3 px-6 text-left whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <c:choose>
+                                            <c:when test="${task.type eq 'Group Task'}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                </svg>
+                                            </c:when>
+                                            <c:when test="${task.type eq 'Personal Task'}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                </svg>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                                </svg>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <span class="font-medium">${task.taskName}</span>
+                                    </div>
+                                </td>
+                                <!-- <td class="py-3 px-6 text-left whitespace-nowrap">${task.description}</td> -->
                                 <td class="py-3 px-6 text-left">${task.dueDate}</td>
                                 <td class="py-3 px-6 text-left">
-                                    <span class="px-2 py-1 rounded-full text-xs ${task.priority eq 'High' ? 'bg-red-200 text-red-800' : task.priority eq 'Medium' ? 'bg-yellow-200 text-yellow-800' : 'bg-green-200 text-green-800'}">
+                                    <span class="px-2 py-1 rounded-full text-xs 
+                                         ${task.priority eq 'High' ? 'bg-red-200 text-red-800' : 
+                                           task.priority eq 'Medium' ? 'bg-yellow-200 text-yellow-800' : 
+                                           'bg-green-200 text-green-800'}">
                                         ${task.priority}
                                     </span>
                                 </td>
                                 <td class="py-3 px-6 text-left">
-                                    <span class="px-2 py-1 rounded-full text-xs ${task.status eq 'Completed' ? 'bg-green-200 text-green-800' : task.status eq 'Overdue' ? 'bg-red-200 text-red-800' : 'bg-yellow-200 text-yellow-800'}">
+                                    <span class="px-2 py-1 rounded-full text-xs 
+                                         ${task.status eq 'Completed' ? 'bg-green-200 text-green-800' : 
+                                           task.status eq 'Overdue' ? 'bg-red-200 text-red-800' : 
+                                           'bg-yellow-200 text-yellow-800'}">
                                         ${task.status}
                                     </span>
                                 </td>
-                                <td class="py-3 px-6 text-left">${task.type}</td>
+                                <td class="py-3 px-6 text-left">
+                                    <span class="font-medium ${task.type eq 'Group Task' ? 'text-blue-600' : 
+                                                              task.type eq 'Personal Task' ? 'text-red-600' : 
+                                                              'text-purple-600'}">
+                                        ${task.type}
+                                    </span>
+                                </td>
                                 <td class="py-3 px-6 text-left">
                                     <button onclick="handleDeleteClick(event, '${task.taskId}')" 
-                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition-colors duration-200 ease-in-out">
                                         Finish
                                     </button>
                                 </td>

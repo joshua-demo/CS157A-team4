@@ -180,42 +180,116 @@
                                 </ul>
                                 
                                 <!-- Add Resource Form -->
-                                <!-- Will work on adding a pdf file -->
-                                <div id="resourceModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                                    <div class="bg-white rounded-lg p-6 w-full max-w-md">
-                                        <h3 class="text-lg font-semibold mb-4">Add Resource</h3>
-                                        <form action="ResourceServlet" method="post" id="resourceForm" class="space-y-4">
-                                            <input type="hidden" name="action" value="add">
-                                            <input type="hidden" name="taskId" value="${task.taskId}">
+                                <div id="resourceModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center overflow-y-auto p-4">
+                                    <div class="relative bg-white rounded-lg w-full max-w-md my-10">
+                                        <!-- Close button at top-right -->
+                                        <button type="button" 
+                                                onclick="toggleResourceModal()" 
+                                                class="absolute top-4 right-4 text-gray-400 hover:text-gray-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+
+                                        <!-- Modal Content -->
+                                        <div class="p-6">
+                                            <h3 class="text-lg font-semibold mb-4">Add Resource</h3>
                                             
-                                            <div>
-                                                <label for="url" class="block text-sm font-medium text-gray-700">URL</label>
-                                                <input type="url" id="url" name="url" required
-                                                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                                                    placeholder="Enter resource URL"
-                                                    oninput="updateDisplayText(this.value)">
-                                            </div>
-                                            
-                                            <div>
-                                                <label for="displayText" class="block text-sm font-medium text-gray-700">
-                                                    Display Text (optional)
-                                                </label>
-                                                <input type="text" id="displayText" name="displayText"
-                                                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-                                                    placeholder="Enter display text (defaults to URL)">
-                                            </div>
-                                            
-                                            <div class="flex justify-end space-x-3 mt-4">
-                                                <button type="button" onclick="toggleResourceModal()"
-                                                        class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                                    Cancel
-                                                </button>
-                                                <button type="submit"
-                                                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm font-medium">
-                                                    Add Resource
-                                                </button>
-                                            </div>
-                                        </form>
+                                            <!-- Form Content -->
+                                            <form action="ResourceServlet" method="post" id="resourceForm" class="space-y-4">
+                                                <input type="hidden" name="action" value="add">
+                                                <input type="hidden" name="taskId" value="${task.taskId}">
+                                                
+                                                <div>
+                                                    <label for="url" class="block text-sm font-medium text-gray-700">URL</label>
+                                                    <input type="url" id="url" name="url" required
+                                                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                                        placeholder="Enter resource URL"
+                                                        oninput="updateDisplayText(this.value)">
+                                                </div>
+                                                
+                                                <div>
+                                                    <label for="displayText" class="block text-sm font-medium text-gray-700">
+                                                        Display Text (optional)
+                                                    </label>
+                                                    <input type="text" id="displayText" name="displayText"
+                                                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+                                                        placeholder="Enter display text (defaults to URL)">
+                                                </div>
+
+                                                <!-- Quick Access Links -->
+                                                <div class="mt-6">
+                                                    <h4 class="text-sm font-medium text-gray-700 mb-3">Quick Access</h4>
+                                                    <div class="grid grid-cols-2 gap-3">
+                                                        <!-- Canvas -->
+                                                        <button type="button" onclick="setResourceUrl('https://sjsu.instructure.com/', 'Canvas')" 
+                                                                class="flex items-center p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                                                            <img src="https://cdn.worldvectorlogo.com/logos/canvas-1.svg" 
+                                                                alt="Canvas" 
+                                                                class="w-6 h-6 mr-2">
+                                                            <span class="text-sm text-gray-600">Canvas</span>
+                                                        </button>
+
+                                                        <!-- Cengage -->
+                                                        <button type="button" onclick="setResourceUrl('https://www.cengage.com/dashboard/home', 'Cengage')" 
+                                                                class="flex items-center p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                                                            <img src="https://logo.clearbit.com/cengage.com" 
+                                                                alt="Cengage" 
+                                                                class="w-6 h-6 mr-2">
+                                                            <span class="text-sm text-gray-600">Cengage</span>
+                                                        </button>
+
+                                                        <!-- Gradescope -->
+                                                        <button type="button" onclick="setResourceUrl('https://www.gradescope.com/', 'Gradescope')" 
+                                                                class="flex items-center p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                                                            <img src="https://logo.clearbit.com/gradescope.com" 
+                                                                alt="Gradescope" 
+                                                                class="w-6 h-6 mr-2">
+                                                            <span class="text-sm text-gray-600">Gradescope</span>
+                                                        </button>
+
+                                                        <!-- Quizlet -->
+                                                        <button type="button" onclick="setResourceUrl('https://quizlet.com/', 'Quizlet')" 
+                                                                class="flex items-center p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                                                            <img src="https://logo.clearbit.com/quizlet.com" 
+                                                                alt="Quizlet" 
+                                                                class="w-6 h-6 mr-2">
+                                                            <span class="text-sm text-gray-600">Quizlet</span>
+                                                        </button>
+
+                                                        <!-- Chegg -->
+                                                        <button type="button" onclick="setResourceUrl('https://www.chegg.com/', 'Chegg')" 
+                                                                class="flex items-center p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                                                            <img src="https://logo.clearbit.com/chegg.com" 
+                                                                alt="Chegg" 
+                                                                class="w-6 h-6 mr-2">
+                                                            <span class="text-sm text-gray-600">Chegg</span>
+                                                        </button>
+
+                                                        <!-- WebAssign -->
+                                                        <button type="button" onclick="setResourceUrl('https://www.webassign.net/', 'WebAssign')" 
+                                                                class="flex items-center p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                                                            <img src="https://logo.clearbit.com/webassign.net" 
+                                                                alt="WebAssign" 
+                                                                class="w-6 h-6 mr-2">
+                                                            <span class="text-sm text-gray-600">WebAssign</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Form Buttons -->
+                                                <div class="flex justify-end space-x-3 mt-6">
+                                                    <button type="button" onclick="toggleResourceModal()"
+                                                            class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                                        Cancel
+                                                    </button>
+                                                    <button type="submit"
+                                                            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm font-medium">
+                                                        Add Resource
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -296,6 +370,24 @@
     <script src="${pageContext.request.contextPath}/timer.js"></script>
     <script src="${pageContext.request.contextPath}/music.js"></script>
     <script>
+        function setResourceUrl(url, displayText) {
+            document.getElementById('url').value = url;
+            document.getElementById('displayText').value = displayText;
+        }
+
+        function updateDisplayText(url) {
+            const displayTextInput = document.getElementById('displayText');
+            if (!displayTextInput.value || displayTextInput.value === displayTextInput.defaultValue) {
+                // Extract domain name for display text
+                try {
+                    const domain = new URL(url).hostname.replace('www.', '');
+                    displayTextInput.value = domain.charAt(0).toUpperCase() + domain.slice(1);
+                } catch {
+                    displayTextInput.value = url;
+                }
+            }
+        }
+
         function confirmUnlink(form) {
             if (confirm('Are you sure you want to unlink this course from the task?')) {
                 form.submit();
