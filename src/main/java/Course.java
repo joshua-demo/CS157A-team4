@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Course {
 	private int courseId;		//corresponds to course_id (primary key, auto increments) 
@@ -9,7 +10,7 @@ public class Course {
 	private LocalDate end_date;
 	private String letterGrade;
 	private double decimalGrade;
-	private ArrayList<Assignment> assignmentsList;
+	private List<Assignment> assignmentsList;
 	
 	//Constructor
 	public Course(int courseId, String courseName, String instructor, LocalDate start_date, LocalDate end_date) {
@@ -19,7 +20,6 @@ public class Course {
 		this.instructor = instructor;
 		this.start_date = start_date;
 		this.end_date = end_date;
-		this.letterGrade = "N/A";
 		this.decimalGrade = 0;
 		assignmentsList = new ArrayList<>();
 	}
@@ -27,6 +27,7 @@ public class Course {
 	//default constructor
 	public Course() {
 		assignmentsList = new ArrayList<>();
+		this.decimalGrade = 0;
 	}
 
 	//getters and setters
@@ -90,6 +91,10 @@ public class Course {
 		assignmentsList.add(assignment);
 	}
 	
+	public void addAssignmentList(List<Assignment> aList) {
+		assignmentsList = aList;
+	}
+	
 	//Derive Letter grade from number grade
 	public String determineLetterGrade(double grade) {
 		
@@ -122,10 +127,10 @@ public class Course {
     		return;
     	}
     	
-    	double sum = 0;
+    	double sum = 100;
     	
     	for (Assignment a : assignmentsList) {
-    		sum += (a.getGrade() / a.getMaxGrade()) * a.getWeight();
+    		sum -= (a.getWeight() - (a.getGrade() / a.getMaxGrade()) * a.getWeight());
     	}
     	
     	this.decimalGrade = sum;

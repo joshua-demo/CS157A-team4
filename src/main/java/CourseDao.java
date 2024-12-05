@@ -172,11 +172,21 @@ public class CourseDao {
 					
 					while (rs.next()) {
 							Course course = new Course();
+							
+							int course_id = rs.getInt("course_id");
+							
 							course.setCourseId(rs.getInt("course_id"));
 							course.setCourseName(rs.getString("name"));
 							course.setInstructor(rs.getString("instructor"));
 							course.setStart_date(rs.getDate("start_date").toLocalDate());
 							course.setEnd_date(rs.getDate("end_date").toLocalDate());
+							
+							AssignmentDao aDao = new AssignmentDao();
+							List<Assignment> assignmentList;
+							assignmentList = aDao.getAssignmentsByCourseId(course_id);
+							course.addAssignmentList(assignmentList);
+							
+							course.calculateGrade();
 							
 							courseList.add(course);
 					}

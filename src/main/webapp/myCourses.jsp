@@ -117,8 +117,8 @@
                             <tr class="border-b border-gray-200 hover:bg-gray-100">
                                 <td class="py-3 px-6 text-left whitespace-nowrap">${course.courseName}</td>
                                 <td class="py-3 px-6 text-left">${course.instructor}</td>
-                                <td class="py-3 px-6 text-left">grade percentage</td>
-                                <td class="py-3 px-6 text-left">letter grade</td>
+                                <td class="py-3 px-6 text-left">${course.decimalGrade}</td>
+                                <td class="py-3 px-6 text-left">${course.letterGrade}</td>
                                 <td class="py-3 px-6 text-left">${course.start_date}</td>
                                 <td class="py-3 px-6 text-left">${course.end_date}</td>
                                 <td class="py-3 px-6 text-left">
