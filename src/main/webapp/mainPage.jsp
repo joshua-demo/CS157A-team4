@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudySmart - Your Ultimate Study Companion</title>
+    <title>StudySmart</title>
     <script src="https://cdn.tailwindcss.com?v=3.3.3"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -37,27 +37,7 @@
 </head>
 <body class="font-[Poppins] bg-gray-100">
     <header class="bg-white shadow-md sticky top-0 z-50 animate-fadeIn">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center">
-                <svg class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-                <span class="ml-2 text-2xl font-bold text-gray-800">StudySmart</span>
-            </div>
-            <div class="hidden md:flex items-center space-x-6">
-                <a href="#features" class="text-gray-600 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md transition duration-300 smooth-scroll">Features</a>
-                <a href="#about" class="text-gray-600 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md transition duration-300 smooth-scroll">About</a>
-                <a href="#contact" class="text-gray-600 hover:text-blue-600 hover:bg-gray-200 px-3 py-2 rounded-md transition duration-300 smooth-scroll">Contact</a>
-            </div>
-            <div class="flex items-center space-x-4">
-                <% if (session.getAttribute("user") != null) { %>
-                    <a href="homePage.jsp" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 transform hover:scale-105">My StudySmart</a>
-                <% } else { %>
-                    <a href="loginPage.jsp" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 transform hover:scale-105">Login</a>
-                    <a href="userRegister.jsp" class="px-4 py-2 bg-white text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 transition duration-300 transform hover:scale-105">Register</a>
-                <% } %>
-            </div>
-        </nav>
+        <jsp:include page="navbar.jsp" />
     </header>
 
     <main>
@@ -65,7 +45,20 @@
             <div class="container mx-auto px-6 text-center">
                 <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-slideInUp">Welcome to StudySmart</h1>
                 <p class="text-xl mb-10 animate-slideInUp">Your ultimate study companion for academic success!</p>
-                <a href="userRegister.jsp" class="bg-white text-blue-600 px-8 py-3 rounded-md font-semibold hover:bg-blue-50 transition duration-300 transform hover:scale-105 inline-block animate-slideInUp">Get Started</a>
+                <a href="userRegister.jsp" 
+                   class="group relative inline-flex items-center justify-center bg-white text-blue-600 px-8 py-3 rounded-md font-semibold 
+                          overflow-hidden transition-all duration-300 ease-out hover:text-white transform hover:scale-105 
+                          hover:shadow-lg animate-slideInUp">
+                    <span class="absolute inset-0 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform 
+                                 duration-300 ease-out origin-left"></span>
+                    <span class="relative flex items-center">
+                        Get Started
+                        <svg class="w-4 h-4 ml-2 transform translate-x-0 group-hover:translate-x-1 transition-transform duration-300" 
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </a>
             </div>
         </section>
 
@@ -112,7 +105,7 @@
 
     <footer class="bg-gray-800 text-white py-10 animate-fadeIn">
         <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2023 StudySmart. All rights reserved.</p>
+            <p>&copy; 2024 StudySmart. All rights reserved.</p>
         </div>
     </footer>
 
