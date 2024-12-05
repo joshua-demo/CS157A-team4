@@ -30,7 +30,7 @@ public class UserRegisterDao {
 		loadDriver(dbdriver);
 		Connection con=getConnection();
 		String result="data entered successfully";
-		String sql="insert into user values(?,?,?,?,?)";
+		String sql="insert into user values(?,?,?,?,?,?)";
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, user.getuser_id());  
@@ -38,6 +38,7 @@ public class UserRegisterDao {
 			ps.setString(3, user.getName());
 			ps.setString(4, user.getPassword());
 			ps.setString(5, user.getProfile_date_created());
+			ps.setString(6, user.getProfilePicture());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -96,7 +97,8 @@ public class UserRegisterDao {
 									rs.getString("user_id"),  // This is the username/user_id
 									rs.getString("email"),
 									rs.getString("name"),
-									rs.getString("password")
+									rs.getString("password"),
+									rs.getString("profilePicture")
 							);
 					}
 			} catch (SQLException e) {

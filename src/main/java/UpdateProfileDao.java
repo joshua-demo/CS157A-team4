@@ -37,13 +37,14 @@ public class UpdateProfileDao {
 			Connection con = getConnection();
 			boolean success = false;
 
-			String sql = "UPDATE user SET name = ?, email = ?, password = ? WHERE user_id = ?";
+			String sql = "UPDATE user SET name = ?, email = ?, password = ?, profilePicture = ? WHERE user_id = ?";
 
 			try (PreparedStatement ps = con.prepareStatement(sql)) {
 					ps.setString(1, user.getName());
 					ps.setString(2, user.getEmail());
 					ps.setString(3, user.getPassword());
-					ps.setString(4, user.getuser_id());
+					ps.setString(4, user.getProfilePicture());
+					ps.setString(5, user.getuser_id());
 
 					int rowsAffected = ps.executeUpdate();
 					success = rowsAffected > 0;
