@@ -273,58 +273,54 @@ public class TaskDao {
 
 	// Method to get all resources for a task
 	private List<Resource> getResourcesForTask(int taskId, Connection con) {
-		List<Resource> resources = new ArrayList<>();
-		String sql = "SELECT id, task_id, url, display_text FROM resource WHERE task_id = ?";
-	    try {
-	        PreparedStatement ps = con.prepareStatement(sql);
-	        ps.setInt(1, taskId);
-	        
-	        ResultSet rs = ps.executeQuery();
-	        while (rs.next()) {
-	            Resource resource = new Resource();
-	            resource.setId(rs.getInt("id"));
-	            resource.setTaskId(rs.getInt("task_id"));
-	            resource.setUrl(rs.getString("url"));
-	            resource.setDisplayText(rs.getString("display_text"));
-	            resources.add(resource);
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (con != null) con.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
-	    return resources;
+			List<Resource> resources = new ArrayList<>();
+			// Update the SQL query to include the type field
+			String sql = "SELECT id, task_id, url, display_text, type FROM resource WHERE task_id = ?";
+			try {
+					PreparedStatement ps = con.prepareStatement(sql);
+					ps.setInt(1, taskId);
+					
+					ResultSet rs = ps.executeQuery();
+					while (rs.next()) {
+							Resource resource = new Resource();
+							resource.setId(rs.getInt("id"));
+							resource.setTaskId(rs.getInt("task_id"));
+							resource.setUrl(rs.getString("url"));
+							resource.setDisplayText(rs.getString("display_text"));
+							resource.setType(rs.getString("type")); // Add this line to set the type
+							resources.add(resource);
+					}
+			} catch (SQLException e) {
+					e.printStackTrace();
+			}
+			return resources;
 	}
 
 	// Method to add a new resource
-	public boolean addResource(int taskId, String url, String displayText) {
-	    loadDriver(dbdriver);
-	    Connection con = getConnection();
-	    
-	    String sql = "INSERT INTO resource (task_id, url, display_text) VALUES (?, ?, ?)";
-	    try {
-	        PreparedStatement ps = con.prepareStatement(sql);
-	        ps.setInt(1, taskId);
-	        ps.setString(2, url);
-	        // If displayText is null or empty, use the URL instead
-	        ps.setString(3, (displayText != null && !displayText.trim().isEmpty()) ? displayText : url);
-	        
-	        int rowsAffected = ps.executeUpdate();
-	        return rowsAffected > 0;
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (con != null) con.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
-	    return false;
+	public boolean addResource(int taskId, String url, String displayText, String type) {
+			loadDriver(dbdriver);
+			Connection con = getConnection();
+			
+			String sql = "INSERT INTO resource (task_id, url, display_text, type) VALUES (?, ?, ?, ?)";
+			try {
+					PreparedStatement ps = con.prepareStatement(sql);
+					ps.setInt(1, taskId);
+					ps.setString(2, url);
+					ps.setString(3, (displayText != null && !displayText.trim().isEmpty()) ? displayText : url);
+					ps.setString(4, type);
+					
+					int rowsAffected = ps.executeUpdate();
+					return rowsAffected > 0;
+			} catch (SQLException e) {
+					e.printStackTrace();
+			} finally {
+					try {
+							if (con != null) con.close();
+					} catch (SQLException e) {
+							e.printStackTrace();
+					}
+			}
+			return false;
 	}
 
 	// Method to delete a resource

@@ -34,8 +34,10 @@ public class ResourceServlet extends HttpServlet {
                 // If displayText is empty, use the URL as display text
                 if (displayText == null || displayText.trim().isEmpty()) {
                     displayText = url;
-                }                
-                taskDao.addResource(taskId, url, displayText);
+                }
+                String resourceType = Resource.detectResourceType(url);
+                
+                taskDao.addResource(taskId, url, displayText, resourceType);
             } else if ("delete".equals(action)) {
                 String resourceIdStr = request.getParameter("resourceId");
                 int resourceId = Integer.parseInt(resourceIdStr);
