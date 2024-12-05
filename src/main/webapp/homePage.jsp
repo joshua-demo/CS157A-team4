@@ -70,7 +70,7 @@
                     </li>
                     <li class="flex justify-between">
                         <span class="text-gray-600">Study Hours This Week:</span>
-                        <span class="font-semibold">12.5</span>
+                        <span class="font-semibold">${weeklyStudyHours}</span>
                     </li>
                 </ul>
             </div>
