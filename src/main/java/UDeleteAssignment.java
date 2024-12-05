@@ -34,8 +34,22 @@ public class UDeleteAssignment extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		
+		String assignmentId = request.getParameter("assignmentId");
+		String course_id = request.getParameter("courseId");
+		String course_name = request.getParameter("courseName");
+		
+		//Terminal testing
+		System.out.println("AssignmentID: " + assignmentId);
+		System.out.println("courseId: " + course_id);
+		System.out.println("courseName: " + course_name);
+		
+		AssignmentDao aDao = new AssignmentDao();
+		
+		aDao.remove(Integer.parseInt(assignmentId));
+		
+		String redir = "UViewAssignment?courseId=" + course_id + "&courseName=" + course_name + "";
+		response.sendRedirect(redir);
 	}
 
 }

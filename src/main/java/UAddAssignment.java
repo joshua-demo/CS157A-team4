@@ -39,6 +39,7 @@ public class UAddAssignment extends HttpServlet {
 		String assignmentName = request.getParameter("assignmentName");
 		String description = request.getParameter("description");
 		String assignmentGrade = request.getParameter("grade");
+		String assignmentMaxGrade = request.getParameter("maxgrade");
 		String assignmentWeight = request.getParameter("weight");
 		
 		String course_id = request.getParameter("courseId");
@@ -48,6 +49,7 @@ public class UAddAssignment extends HttpServlet {
 	    request.setAttribute("assignmentName", assignmentName);
 	    request.setAttribute("description", description);
 	    request.setAttribute("grade", assignmentGrade);
+	    request.setAttribute("maxgrade", assignmentMaxGrade);
 	    request.setAttribute("weight", assignmentWeight);
 	    request.setAttribute("courseId", course_id);
 		
@@ -55,6 +57,7 @@ public class UAddAssignment extends HttpServlet {
 		assignment.setName(assignmentName);
 		assignment.setDescription(description);
 		assignment.setGrade(Double.parseDouble(assignmentGrade));
+		assignment.setMaxGrade(Double.parseDouble(assignmentMaxGrade));
 		assignment.setWeight(Double.parseDouble(assignmentWeight));
 		
 		AssignmentDao aDao = new AssignmentDao();

@@ -7,7 +7,8 @@ public class Course {
 	private String instructor; 	//corresponds to instructor
 	private LocalDate start_date;
 	private LocalDate end_date;
-	private String grade;
+	private String letterGrade;
+	private double decimalGrade;
 	private ArrayList<Assignment> assignmentsList;
 	
 	//Constructor
@@ -18,7 +19,8 @@ public class Course {
 		this.instructor = instructor;
 		this.start_date = start_date;
 		this.end_date = end_date;
-		this.grade = "N/A";
+		this.letterGrade = "N/A";
+		this.decimalGrade = 0;
 		assignmentsList = new ArrayList<>();
 	}
 
@@ -68,6 +70,14 @@ public class Course {
 		this.end_date = end_date;
 	}
 
+	public String getLetterGrade() {
+		return letterGrade;
+	}
+	
+	public double getDecimalGrade() {
+		return decimalGrade;
+	}
+	
 	@Override
 	public String toString() {
 		return "Course [courseId=" + courseId + ", courseName=" + courseName + ", instructor=" + instructor
@@ -108,16 +118,17 @@ public class Course {
 	//Calculate Grade using all assignments in course
     public void calculateGrade() {
     	if (assignmentsList.size() == 0) {
-    		grade = "N/A";
+    		letterGrade = "N/A";
     		return;
     	}
     	
     	double sum = 0;
     	
     	for (Assignment a : assignmentsList) {
-    		sum += a.getGrade() * a.getWeight();
+    		sum += (a.getGrade() / a.getMaxGrade()) * a.getWeight();
     	}
     	
-    	this.grade = determineLetterGrade(sum);
+    	this.decimalGrade = sum;
+    	this.letterGrade = determineLetterGrade(sum);
     }
 }

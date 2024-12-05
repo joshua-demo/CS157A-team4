@@ -5,13 +5,15 @@ public class Assignment {
 	private String name;
 	private String description;
 	private double grade;
+	private double maxGrade;
 	private double weight;
 	
 	//Constructors
-	public Assignment(int assignmentId, String name, String description, double grade, double weight) {
+	public Assignment(int assignmentId, String name, String description, double grade, double maxGrade, double weight) {
 		this.name = name;
 		this.description = description;
 		this.grade = grade;
+		this.maxGrade = maxGrade;
 		this.weight = weight;
 	}
 	
@@ -53,6 +55,14 @@ public class Assignment {
 		this.grade = grade;
 	}
 
+	public double getMaxGrade() {
+		return maxGrade;
+	}
+	
+	public void setMaxGrade(double maxGrade) {
+		this.maxGrade = maxGrade;
+	}
+	
 	public double getWeight() {
 		return weight;
 	}

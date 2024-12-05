@@ -84,6 +84,16 @@
 					               placeholder="Enter grade">
 					    </div>
 					
+						<!-- Max Grade -->
+					    <div>
+					        <label for="maxgrade" class="block text-gray-700 text-sm font-bold mb-2">
+					            Maximum Possible Grade:
+					        </label>
+					        <input type="number" id="maxgrade" name="maxgrade" step="0.01" required
+					               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+					               placeholder="Enter Maximum Grade">
+					    </div>
+					
 					    <!-- Weight -->
 					    <div>
 					        <label for="weight" class="block text-gray-700 text-sm font-bold mb-2">
@@ -91,11 +101,11 @@
 					        </label>
 					        <input type="number" id="weight" name="weight" step="0.01" required
 					               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-					               placeholder="Enter weight (e.g., 0.5 for 50%)">
+					               placeholder="Enter weight (e.g., 50 for 50%)">
 					    </div>
 					    
 					    <input type="hidden" id="courseId" name="courseId" value="${param.courseId}">
-					    <input type="hidden" id="courseId" name="courseId" value="${param.courseName}">
+					    <input type="hidden" id="courseName" name="courseName" value="${param.courseName}">
 					
 					    <!-- Submit Button -->
 					    <div class="flex justify-end pt-2">
@@ -124,7 +134,8 @@
                             <th class="py-3 px-6 text-left">Assignment Name</th>
                             <th class="py-3 px-6 text-left">Description</th>
                             <th class="py-3 px-6 text-left">Grade</th>
-                            <th class="py-3 px-6 text-left">Weight</th>
+                            <th class="py-3 px-6 text-left">Max Grade</th>
+                            <th class="py-3 px-6 text-left">Weight (%)</th>
                             <th class="py-3 px-3 text-left">Remove</th> 
                         </tr>
                     </thead>
@@ -134,10 +145,13 @@
                                 <td class="py-3 px-6 text-left whitespace-nowrap">${assignment.name}</td>
                                 <td class="py-3 px-6 text-left">${assignment.description}</td>
                                 <td class="py-3 px-6 text-left">${assignment.grade}</td> 
+                                <td class="py-3 px-6 text-left">${assignment.maxGrade}</td> 
                                 <td class="py-3 px-6 text-left">${assignment.weight}</td>                               
                                	<td class="py-3 px-6 text-left">
 					                <form action="UDeleteAssignment" method="post" onsubmit="return confirm('Are you sure you want to remove this assignment?') & setTimeout(refreshCourses, 1000);">
 					                    <input type="hidden" name="assignmentId" value="${assignment.assignmentId}" />
+					                    <input type="hidden" id="courseId" name="courseId" value="${param.courseId}">
+					  					<input type="hidden" id="courseName" name="courseName" value="${param.courseName}">
 					                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
 					                        Remove
 					                    </button>

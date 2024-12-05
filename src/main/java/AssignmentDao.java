@@ -37,7 +37,7 @@ public class AssignmentDao {
 		 Connection con = getConnection();
 		 List<Assignment> aList = new ArrayList<>();
 		 
-		 String sql = "SELECT a.assignment_id, a.name, a.description, a.grade, a.weight " + 
+		 String sql = "SELECT a.assignment_id, a.name, a.description, a.grade, a.max_grade, a.weight " + 
 				 	  "FROM Assignment a " +
 				 	  "JOIN AssignedBy b ON a.assignment_id = b.assignment_id " +
 				 	  "WHERE b.course_id = ?";
@@ -54,6 +54,7 @@ public class AssignmentDao {
 				 a.setName(rs.getString("name"));
 				 a.setDescription(rs.getString("description"));
 				 a.setGrade(rs.getDouble("grade"));
+				 a.setMaxGrade(rs.getDouble("max_grade"));
 				 a.setWeight(rs.getDouble("weight"));
 				 
 				 aList.add(a);
@@ -78,7 +79,7 @@ public class AssignmentDao {
 		  	loadDriver(dbdriver);
 			Connection con = getConnection();
 			String result = "Assignment entered successfully";
-			String assignmentInsertSql = "INSERT INTO assignment (name, description, grade, weight) VALUES (?, ?, ?, ?)";
+			String assignmentInsertSql = "INSERT INTO assignment (name, description, grade, max_grade, weight) VALUES (?, ?, ?, ?, ?)";
 			String assignedByInsertSql = "INSERT INTO assignedby (assignment_id, course_id) VALUES (?, ?)";
 			
 			try {
@@ -87,7 +88,8 @@ public class AssignmentDao {
 				psAssign.setString(1, a.getName());
 				psAssign.setString(2, a.getDescription());
 				psAssign.setDouble(3, a.getGrade());
-				psAssign.setDouble(4, a.getWeight());
+				psAssign.setDouble(4, a.getMaxGrade());
+				psAssign.setDouble(5, a.getWeight());
 				
 				int affectedRows = psAssign.executeUpdate();
 
@@ -123,4 +125,38 @@ public class AssignmentDao {
 			
 			return result;
 	  }
+	 
+	 public String remove(int assignmentId) {
+		 loadDriver(dbdriver);
+		 Connection con = getConnection();
+		 
+		 String result = "Sucessfully deleted from Assignment and AssignedTo Tables";
+		 String removeFromAssignment = "DELETE FROM assignment WHERE assignment_id = ?";
+		 String removeFromAssignedTo = "DELETE FROM assignedby WHERE assignment_id = ?";
+		 
+		 try {
+			 
+			 PreparedStatement assignmentPs = con.prepareStatement(removeFromAssignment);
+			 PreparedStatement assignedToPs = con.prepareStatement(removeFromAssignedTo);
+			 
+			 assignmentPs.setInt(1, assignmentId);
+			 assignedToPs.setInt(1, assignmentId);
+			 
+			 assignedToPs.executeUpdate();
+			 assignmentPs.executeUpdate();
+			 
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 try {
+				 if (con != null) {
+					 con.close();
+				 }
+			 } catch (SQLException e) {
+				 e.printStackTrace();
+			 }
+		 }
+		 
+		 return result;
+	 }
 }
