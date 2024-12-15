@@ -1,6 +1,10 @@
-DROP DATABASE IF EXISTS `studysmart`;
-CREATE DATABASE `studysmart`;
+CREATE DATABASE  IF NOT EXISTS `studysmart` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `studysmart`;
+-- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
+--
+-- Host: localhost    Database: studysmart
+-- ------------------------------------------------------
+-- Server version	9.0.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,33 +18,56 @@ USE `studysmart`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `attendance`
+-- Table structure for table `assignedby`
 --
 
-DROP TABLE IF EXISTS `attendance`;
+DROP TABLE IF EXISTS `assignedby`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `attendance` (
-  `attendance_id` int NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(50) DEFAULT NULL,
-  `course_id` int DEFAULT NULL,
-  `date` date NOT NULL,
-  `status` enum('Present','Absent','Late') NOT NULL,
-  PRIMARY KEY (`attendance_id`),
-  KEY `user_id` (`user_id`),
-  KEY `course_id` (`course_id`),
-  CONSTRAINT `attendance_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
-  CONSTRAINT `attendance_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`)
+CREATE TABLE `assignedby` (
+  `assignment_id` int NOT NULL,
+  `course_id` int NOT NULL,
+  PRIMARY KEY (`assignment_id`,`course_id`),
+  CONSTRAINT `assignedby_ibfk_1` FOREIGN KEY (`assignment_id`) REFERENCES `assignment` (`assignment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `attendance`
+-- Dumping data for table `assignedby`
 --
 
-LOCK TABLES `attendance` WRITE;
-/*!40000 ALTER TABLE `attendance` DISABLE KEYS */;
-/*!40000 ALTER TABLE `attendance` ENABLE KEYS */;
+LOCK TABLES `assignedby` WRITE;
+/*!40000 ALTER TABLE `assignedby` DISABLE KEYS */;
+INSERT INTO `assignedby` VALUES (1,1),(2,1),(3,5);
+/*!40000 ALTER TABLE `assignedby` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `assignment`
+--
+
+DROP TABLE IF EXISTS `assignment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `assignment` (
+  `assignment_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `grade` double DEFAULT NULL,
+  `max_grade` double DEFAULT NULL,
+  `weight` double DEFAULT NULL,
+  PRIMARY KEY (`assignment_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `assignment`
+--
+
+LOCK TABLES `assignment` WRITE;
+/*!40000 ALTER TABLE `assignment` DISABLE KEYS */;
+INSERT INTO `assignment` VALUES (1,'HW4','finish the homework before class',60,80,60),(2,'hw3','asndkasd',40,80,20),(3,'Hw1','homeworkone',80,100,25);
+/*!40000 ALTER TABLE `assignment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -57,7 +84,7 @@ CREATE TABLE `course` (
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
   PRIMARY KEY (`course_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +138,7 @@ CREATE TABLE `extracurricular` (
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
   PRIMARY KEY (`extracurricular_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,6 +147,7 @@ CREATE TABLE `extracurricular` (
 
 LOCK TABLES `extracurricular` WRITE;
 /*!40000 ALTER TABLE `extracurricular` DISABLE KEYS */;
+INSERT INTO `extracurricular` VALUES (1,'Turkey Trot','Thanksgiving 10k running','2024-11-28','2024-11-28'),(2,'Turkey Trot','Thanksgiving 10k ','2024-12-05','2024-12-06');
 /*!40000 ALTER TABLE `extracurricular` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -132,14 +160,11 @@ DROP TABLE IF EXISTS `grade`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `grade` (
   `grade_id` int NOT NULL AUTO_INCREMENT,
-  `course_id` int DEFAULT NULL,
-  `value` decimal(5,2) NOT NULL,
-  `type` varchar(50) NOT NULL,
+  `decimal_grade` double DEFAULT NULL,
+  `letter_grade` varchar(255) NOT NULL,
   `date_recorded` date NOT NULL,
-  PRIMARY KEY (`grade_id`),
-  KEY `course_id` (`course_id`),
-  CONSTRAINT `grade_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`grade_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,6 +174,32 @@ CREATE TABLE `grade` (
 LOCK TABLES `grade` WRITE;
 /*!40000 ALTER TABLE `grade` DISABLE KEYS */;
 /*!40000 ALTER TABLE `grade` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `gradeof`
+--
+
+DROP TABLE IF EXISTS `gradeof`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gradeof` (
+  `grade_id` int NOT NULL,
+  `course_id` int NOT NULL,
+  PRIMARY KEY (`grade_id`,`course_id`),
+  KEY `course_id` (`course_id`),
+  CONSTRAINT `gradeof_ibfk_1` FOREIGN KEY (`grade_id`) REFERENCES `grade` (`grade_id`),
+  CONSTRAINT `gradeof_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gradeof`
+--
+
+LOCK TABLES `gradeof` WRITE;
+/*!40000 ALTER TABLE `gradeof` DISABLE KEYS */;
+/*!40000 ALTER TABLE `gradeof` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -174,35 +225,8 @@ CREATE TABLE `involvedin` (
 
 LOCK TABLES `involvedin` WRITE;
 /*!40000 ALTER TABLE `involvedin` DISABLE KEYS */;
+INSERT INTO `involvedin` VALUES ('domipo',1),('husky',2);
 /*!40000 ALTER TABLE `involvedin` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `note`
---
-
-DROP TABLE IF EXISTS `note`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `note` (
-  `note_id` int NOT NULL AUTO_INCREMENT,
-  `task_id` int DEFAULT NULL,
-  `content` text NOT NULL,
-  `created_date` date NOT NULL,
-  `last_modified_date` date DEFAULT NULL,
-  PRIMARY KEY (`note_id`),
-  KEY `task_id` (`task_id`),
-  CONSTRAINT `note_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`task_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `note`
---
-
-LOCK TABLES `note` WRITE;
-/*!40000 ALTER TABLE `note` DISABLE KEYS */;
-/*!40000 ALTER TABLE `note` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -228,33 +252,8 @@ CREATE TABLE `performs` (
 
 LOCK TABLES `performs` WRITE;
 /*!40000 ALTER TABLE `performs` DISABLE KEYS */;
-INSERT INTO `performs` VALUES ('domipo',1),('chihuahua',6),('domipo',9),('domipo',11),('domipo',12),('domipo',13);
+INSERT INTO `performs` VALUES ('chihuahua',6),('domipo',17),('domipo',19),('domipo',20),('domipo',21),('domipo',22);
 /*!40000 ALTER TABLE `performs` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `project`
---
-
-DROP TABLE IF EXISTS `project`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `project` (
-  `task_id` int NOT NULL,
-  `start_date` date NOT NULL,
-  `end_date` date NOT NULL,
-  PRIMARY KEY (`task_id`),
-  CONSTRAINT `project_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`task_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `project`
---
-
-LOCK TABLES `project` WRITE;
-/*!40000 ALTER TABLE `project` DISABLE KEYS */;
-/*!40000 ALTER TABLE `project` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -269,10 +268,11 @@ CREATE TABLE `resource` (
   `task_id` int NOT NULL,
   `url` varchar(2083) DEFAULT NULL,
   `display_text` varchar(255) DEFAULT NULL,
+  `type` varchar(20) DEFAULT 'link',
   PRIMARY KEY (`id`),
   KEY `task_id` (`task_id`),
   CONSTRAINT `resource_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`task_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -281,7 +281,7 @@ CREATE TABLE `resource` (
 
 LOCK TABLES `resource` WRITE;
 /*!40000 ALTER TABLE `resource` DISABLE KEYS */;
-INSERT INTO `resource` VALUES (6,1,'https://www.youtube.com/watch?v=RRiRKFIdXL4','Funny video'),(7,7,'https://www.youtube.com/shorts/olr97t2xQ1A','How to deal with aggressive chihuahua'),(8,10,'https://www.youtube.com/','A youtube link');
+INSERT INTO `resource` VALUES (7,7,'https://www.youtube.com/shorts/olr97t2xQ1A','How to deal with aggressive chihuahua','link'),(8,10,'https://www.youtube.com/','A youtube link','link'),(15,18,'https://www.gradescope.com/','your grade','link'),(16,18,'https://www.cengage.com/dashboard/home','math homework','link');
 /*!40000 ALTER TABLE `resource` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -308,7 +308,7 @@ CREATE TABLE `studies` (
 
 LOCK TABLES `studies` WRITE;
 /*!40000 ALTER TABLE `studies` DISABLE KEYS */;
-INSERT INTO `studies` VALUES ('domipo',1),('domipo',2),('domipo',3),('domipo',4),('domipo',5),('domipo',6),('domipo',7),('domipo',8),('domipo',9),('domipo',10),('domipo',11),('domipo',12),('domipo',13),('domipo',14),('domipo',15),('domipo',16),('domipo',17),('domipo',18),('domipo',19),('domipo',20),('domipo',21),('domipo',22),('domipo',23),('domipo',24),('domipo',25),('domipo',26),('domipo',27),('domipo',28),('domipo',29),('domipo',30),('domipo',31),('domipo',32),('domipo',33),('domipo',34),('domipo',35),('domipo',36),('domipo',37),('domipo',38),('domipo',39),('domipo',40),('domipo',41),('domipo',42),('domipo',43),('domipo',44);
+INSERT INTO `studies` VALUES ('domipo',1),('domipo',2),('domipo',3),('domipo',4),('domipo',5),('domipo',6),('domipo',7),('domipo',8),('domipo',9),('domipo',10),('domipo',11),('domipo',12),('domipo',13),('domipo',14),('domipo',15),('domipo',16),('domipo',17),('domipo',18),('domipo',19),('domipo',20),('domipo',21),('domipo',22),('domipo',23),('domipo',24),('domipo',25),('domipo',26),('domipo',27),('domipo',28),('domipo',29),('domipo',30),('domipo',31),('domipo',32),('domipo',33),('domipo',34),('domipo',35),('domipo',36),('domipo',37),('domipo',38),('domipo',39),('domipo',40),('domipo',41),('domipo',42),('domipo',43),('domipo',44),('domipo',45),('domipo',46);
 /*!40000 ALTER TABLE `studies` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -325,7 +325,7 @@ CREATE TABLE `studysession` (
   `end_time` time NOT NULL,
   `date_recorded` date NOT NULL,
   PRIMARY KEY (`session_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -334,7 +334,7 @@ CREATE TABLE `studysession` (
 
 LOCK TABLES `studysession` WRITE;
 /*!40000 ALTER TABLE `studysession` DISABLE KEYS */;
-INSERT INTO `studysession` VALUES (1,'23:00:03','23:00:19','2024-12-02'),(2,'23:16:30','23:16:38','2024-12-02'),(3,'23:35:39','23:35:45','2024-12-02'),(4,'23:55:47','23:56:02','2024-12-02'),(5,'09:00:00','11:30:00','2024-12-02'),(6,'14:00:00','16:00:00','2024-12-02'),(7,'19:00:00','21:00:00','2024-12-01'),(8,'10:00:00','12:30:00','2024-12-01'),(9,'15:00:00','17:30:00','2024-11-30'),(10,'09:30:00','12:00:00','2024-11-29'),(11,'14:00:00','16:30:00','2024-11-29'),(12,'10:00:00','11:30:00','2024-11-28'),(13,'13:00:00','14:30:00','2024-11-27'),(14,'16:00:00','18:00:00','2024-11-27'),(15,'09:00:00','11:00:00','2024-11-25'),(16,'14:00:00','16:00:00','2024-11-25'),(17,'10:00:00','12:00:00','2024-11-24'),(18,'15:00:00','17:00:00','2024-11-24'),(19,'09:30:00','11:30:00','2024-11-23'),(20,'14:30:00','16:30:00','2024-11-23'),(21,'10:00:00','12:00:00','2024-11-22'),(22,'13:00:00','15:00:00','2024-11-21'),(23,'09:00:00','11:00:00','2024-11-18'),(24,'14:00:00','16:30:00','2024-11-18'),(25,'10:00:00','12:00:00','2024-11-17'),(26,'15:00:00','17:00:00','2024-11-17'),(27,'09:30:00','11:30:00','2024-11-16'),(28,'14:30:00','16:00:00','2024-11-16'),(29,'10:00:00','12:30:00','2024-11-15'),(30,'09:00:00','11:00:00','2024-11-11'),(31,'14:00:00','16:00:00','2024-11-11'),(32,'10:00:00','12:00:00','2024-11-10'),(33,'15:00:00','17:30:00','2024-11-10'),(34,'09:30:00','12:00:00','2024-11-09'),(35,'14:30:00','16:30:00','2024-11-09'),(36,'09:00:00','11:30:00','2024-11-04'),(37,'14:00:00','16:00:00','2024-11-04'),(38,'10:00:00','12:30:00','2024-11-03'),(39,'15:00:00','17:00:00','2024-11-03'),(40,'09:30:00','11:30:00','2024-11-02'),(41,'14:30:00','16:30:00','2024-11-02'),(42,'18:19:01','18:19:17','2024-12-03'),(43,'09:00:00','11:00:00','2024-12-03'),(44,'14:00:00','16:00:00','2024-12-03');
+INSERT INTO `studysession` VALUES (1,'23:00:03','23:00:19','2024-12-02'),(2,'23:16:30','23:16:38','2024-12-02'),(3,'23:35:39','23:35:45','2024-12-02'),(4,'23:55:47','23:56:02','2024-12-02'),(5,'09:00:00','11:30:00','2024-12-02'),(6,'14:00:00','16:00:00','2024-12-02'),(7,'19:00:00','21:00:00','2024-12-01'),(8,'10:00:00','12:30:00','2024-12-01'),(9,'15:00:00','17:30:00','2024-11-30'),(10,'09:30:00','12:00:00','2024-11-29'),(11,'14:00:00','16:30:00','2024-11-29'),(12,'10:00:00','11:30:00','2024-11-28'),(13,'13:00:00','14:30:00','2024-11-27'),(14,'16:00:00','18:00:00','2024-11-27'),(15,'09:00:00','11:00:00','2024-11-25'),(16,'14:00:00','16:00:00','2024-11-25'),(17,'10:00:00','12:00:00','2024-11-24'),(18,'15:00:00','17:00:00','2024-11-24'),(19,'09:30:00','11:30:00','2024-11-23'),(20,'14:30:00','16:30:00','2024-11-23'),(21,'10:00:00','12:00:00','2024-11-22'),(22,'13:00:00','15:00:00','2024-11-21'),(23,'09:00:00','11:00:00','2024-11-18'),(24,'14:00:00','16:30:00','2024-11-18'),(25,'10:00:00','12:00:00','2024-11-17'),(26,'15:00:00','17:00:00','2024-11-17'),(27,'09:30:00','11:30:00','2024-11-16'),(28,'14:30:00','16:00:00','2024-11-16'),(29,'10:00:00','12:30:00','2024-11-15'),(30,'09:00:00','11:00:00','2024-11-11'),(31,'14:00:00','16:00:00','2024-11-11'),(32,'10:00:00','12:00:00','2024-11-10'),(33,'15:00:00','17:30:00','2024-11-10'),(34,'09:30:00','12:00:00','2024-11-09'),(35,'14:30:00','16:30:00','2024-11-09'),(36,'09:00:00','11:30:00','2024-11-04'),(37,'14:00:00','16:00:00','2024-11-04'),(38,'10:00:00','12:30:00','2024-11-03'),(39,'15:00:00','17:00:00','2024-11-03'),(40,'09:30:00','11:30:00','2024-11-02'),(41,'14:30:00','16:30:00','2024-11-02'),(42,'18:19:01','18:19:17','2024-12-03'),(43,'09:00:00','11:00:00','2024-12-03'),(44,'14:00:00','16:00:00','2024-12-03'),(45,'23:55:28','23:55:33','2024-12-05'),(46,'16:40:24','16:40:32','2024-12-06');
 /*!40000 ALTER TABLE `studysession` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,7 +356,7 @@ CREATE TABLE `task` (
   `quick_note` varchar(255) DEFAULT NULL,
   `progress` int DEFAULT '0',
   PRIMARY KEY (`task_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -365,7 +365,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (1,'Presentation CS157A','Finish 3 to 4 functional requirements for group project before classtime on Thursday','2024-10-21','High','Completed','Group Project','Make sure to finish this before due date',100),(6,'Learn how to bark','bark continously','2024-11-20','Low','Completed','Group Project',NULL,100),(7,'Fight with chiahuahua','chihuahua is a b*tch','2024-11-21','High','Overdue','Assignment','why is the chihuahua so aggressive',50),(9,'Second code review','Implementing about 70% of the project','2024-11-21','Medium','Overdue','Assignment',NULL,0),(10,'testingTask','task task task tsaK KSI ','2024-11-21','Low','Overdue','Assignment','im working harrrddddd????',50),(11,'Final Demo Project','Finish 90% project','2024-12-03','Medium','Pending','Group Project',NULL,0),(12,'Final Exam CS-157A','every chapter','2024-12-02','Low','Pending','Assignment',NULL,0),(13,'Task from the past','this is past','2024-12-01','Low','Overdue','Assignment',NULL,0);
+INSERT INTO `task` VALUES (6,'Learn how to bark','bark continously','2024-11-20','Low','Completed','Group Project',NULL,100),(7,'Fight with chiahuahua','chihuahua is a b*tch','2024-11-21','High','Overdue','Assignment','why is the chihuahua so aggressive',50),(10,'testingTask','task task task tsaK KSI ','2024-11-21','Low','Overdue','Assignment','im working harrrddddd????',50),(17,'Final Demo Presentation CS-157A','Merge and fix all the conflict','2024-12-05','High','Completed','Group Task',NULL,0),(18,'gRPC hash table program CS149','Complete the modification in java','2024-12-06','Medium','Completed','Personal Task','this is note',100),(19,'HW8 MATH-33LA','finish all problems','2024-12-09','Low','Pending','Personal Task',NULL,0),(20,'Final Exam Math33LA','Review all problems and practices','2024-12-11','Medium','Pending','Exam',NULL,0),(21,'Second Code review project CS157A','Finish 70% of all functional requirements','2024-11-21','High','Overdue','Group Task',NULL,0),(22,'Presentation demo','demo for group progject','2024-12-04','Low','Overdue','Group Task',NULL,0);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -392,7 +392,7 @@ CREATE TABLE `tasktodo` (
 
 LOCK TABLES `tasktodo` WRITE;
 /*!40000 ALTER TABLE `tasktodo` DISABLE KEYS */;
-INSERT INTO `tasktodo` VALUES (4,1);
+INSERT INTO `tasktodo` VALUES (1,18);
 /*!40000 ALTER TABLE `tasktodo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -409,6 +409,7 @@ CREATE TABLE `user` (
   `name` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `profile_created_date` date NOT NULL,
+  `profilePicture` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -419,7 +420,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('chihuahua','Chihuahua','chihua@shiba.com','123','2024-11-20'),('chowmein','chowmein@gmail.com','Chow Mein','123456','2024-12-02'),('corgi','corgiCorgi','corgi@gmail.com','123','2024-11-20'),('domipo','minhphongdo','domipo1052@gmail.com','123','2024-10-14'),('friedRice','Fried Rice','friedrice@email.com','123','2024-12-02'),('gerdnang','gerd nang','gerdnang@gmail.com','456','2024-12-02'),('minh','minhphongdo','123@gmail.com','123','2024-10-22'),('shiba','shibashiba','shiba-inu@gmail.com','123','2024-11-20');
+INSERT INTO `user` VALUES ('chihuahua','Chihuahua','chihua@shiba.com','123','2024-11-20',NULL),('chowmein','chowmein@gmail.com','Chow Mein','123456','2024-12-02',NULL),('corgi','corgiCorgi','corgi@gmail.com','123','2024-11-20',NULL),('domipo','domipo@gmail.com','minhphongdo','123','2024-10-14','uploads/illit-the-1st-mini-album-super-real-me-logo-banner-update-v0-5ke960h5avkc1.webp'),('friedRice','Fried Rice','friedrice@email.com','123','2024-12-02',NULL),('gerdnang','gerd nang','gerdnang@gmail.com','456','2024-12-02',NULL),('husky','hus@gmail.com','hushus','123','2024-12-05','uploads/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg'),('minh','minhphongdo','123@gmail.com','123','2024-10-22',NULL),('sampleUser','alice@gmail.com','Bobby','aaa','2024-12-05','uploads/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.jpg'),('shiba','shibashiba','shiba-inu@gmail.com','123','2024-11-20',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -432,4 +433,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-03 19:17:39
+-- Dump completed on 2024-12-15  0:44:17
