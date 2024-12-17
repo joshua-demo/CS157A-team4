@@ -38,7 +38,7 @@ public class CourseDao {
 			String courseInsertSql = "INSERT INTO course (name, instructor, start_date, end_date) VALUES (?, ?, ?, ?)";
 			String enrolledInsertSql = "INSERT INTO enrolled (user_id, course_id) VALUES (?, ?)";
 			String insertGrade = "INSERT INTO grade (decimal_grade, letter_grade, date_recorded) VALUES (?, ?, ?)";
-			String insertGradeOf = "INSERT INTO gradeof (grade_id, course_id) VALUES (?, ?)";;
+			String insertGradeOf = "INSERT INTO gradeof (grade_id, course_id) VALUES (?, ?)";
 			
 			try {
 				// Insert course and retrieve generated course_id
@@ -114,6 +114,15 @@ public class CourseDao {
 		Connection con = getConnection();
 		String result = "Course deleted sucessfully";
 		
+		List<Assignment> assignList;
+		
+		//Delete all assignments First
+		assignList = getAssignmentsByCourseId(course_id);
+		for (Assignment a : assignList) {
+			removeAssignment(a.getAssignmentId());
+		}
+		
+		//Now deleting the course
 		try {
 			String coursesSql = "DELETE FROM course WHERE course_id = ?";
 			String enrolledSql = "DELETE FROM enrolled WHERE course_id = ? AND user_id = ?";
@@ -185,7 +194,6 @@ public class CourseDao {
 							List<Assignment> assignmentList;
 							assignmentList = aDao.getAssignmentsByCourseId(course_id);
 							course.addAssignmentList(assignmentList);
-							
 							course.calculateGrade();
 							
 							courseList.add(course);
@@ -203,4 +211,82 @@ public class CourseDao {
 			}
 			return courseList;
 	}
+	
+	public List<Assignment> getAssignmentsByCourseId(int courseId) {
+		
+		 loadDriver(dbdriver);
+		 Connection con = getConnection();
+		 List<Assignment> aList = new ArrayList<>();
+		 
+		 String sql = "SELECT a.assignment_id, a.name, a.description, a.grade, a.max_grade, a.weight " + 
+				 	  "FROM Assignment a " +
+				 	  "JOIN AssignedBy b ON a.assignment_id = b.assignment_id " +
+				 	  "WHERE b.course_id = ?";
+		 
+		 try {
+			 
+			 PreparedStatement ps = con.prepareStatement(sql);
+			 ps.setInt(1, courseId);
+			 ResultSet rs = ps.executeQuery();
+			 
+			 while(rs.next()) {
+				 Assignment a = new Assignment();
+				 a.setAssignmentId(rs.getInt("assignment_id"));
+				 a.setName(rs.getString("name"));
+				 a.setDescription(rs.getString("description"));
+				 a.setGrade(rs.getDouble("grade"));
+				 a.setMaxGrade(rs.getDouble("max_grade"));
+				 a.setWeight(rs.getDouble("weight"));
+				 
+				 aList.add(a);
+			 }
+			 
+		 } catch(Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 try {
+				 if (con != null) {
+					 con.close();
+				 }
+			 } catch(SQLException s) {
+				 s.printStackTrace();
+			 }
+		 }
+		 
+		 return aList;
+	 }
+	
+	public String removeAssignment(int assignmentId) {
+		 loadDriver(dbdriver);
+		 Connection con = getConnection();
+		 
+		 String result = "Sucessfully deleted from Assignment and AssignedTo Tables";
+		 String removeFromAssignment = "DELETE FROM assignment WHERE assignment_id = ?";
+		 String removeFromAssignedTo = "DELETE FROM assignedby WHERE assignment_id = ?";
+		 
+		 try {
+			 
+			 PreparedStatement assignmentPs = con.prepareStatement(removeFromAssignment);
+			 PreparedStatement assignedToPs = con.prepareStatement(removeFromAssignedTo);
+			 
+			 assignmentPs.setInt(1, assignmentId);
+			 assignedToPs.setInt(1, assignmentId);
+			 
+			 assignedToPs.executeUpdate();
+			 assignmentPs.executeUpdate();
+			 
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 } finally {
+			 try {
+				 if (con != null) {
+					 con.close();
+				 }
+			 } catch (SQLException e) {
+				 e.printStackTrace();
+			 }
+		 }
+		 
+		 return result;
+	 }
 }

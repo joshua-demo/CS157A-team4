@@ -41,8 +41,14 @@ public class UViewCourse extends HttpServlet {
 
         // Call CourseDao to retrieve courses for the given user_id
         CourseDao courseDao = new CourseDao();
+        GradeDao gradeDao = new GradeDao();
         
         List<Course> courses = courseDao.getCourseByUserId(userId);
+        
+        for (Course c : courses) {
+        	//System.out.println("Updating grades");
+        	gradeDao.insertGrade(c);
+        }
         
         // Set the courses in the request scope to be accessible in the JSP
         request.setAttribute("courseList", courses);
